@@ -11,6 +11,15 @@
 
     </parent>
 
+    <scm>
+        <connection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/trunk</connection>
+        <developerConnection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/trunk
+        </developerConnection>
+    </scm>
+
+    <description>This builds mashery iodocs from spring annotated controllers.
+        It is limited to GET methods currently.
+    </description>
     <packaging>jar</packaging>
     <groupId>bbc.iplayer.spring</groupId>
     <artifactId>masheryiodocs</artifactId>
