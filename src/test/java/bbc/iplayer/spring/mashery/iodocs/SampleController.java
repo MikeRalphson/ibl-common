@@ -20,7 +20,6 @@ public class SampleController {
     public SampleController() {
     }
 
-    // TODO No debug as it needs to be in the abstract controller or similar
     @IoDocsResourceName("A to Z")
     @IoDocsMethodName("Programmes by initial title character")
     @IoDocsDescription("Get the Programmes whose title begins with the given initial character.")
