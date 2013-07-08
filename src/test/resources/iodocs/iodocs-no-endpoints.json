@@ -1,0 +1,16 @@
+{
+    "name": "iPlayer-API",
+    "version": "1.0",
+    "title": "BBC iPlayer API",
+    "description": "The definitive iPlayer API.",
+    "basePath": "http://d.bbc.co.uk",
+    "protocol": "rest",
+    "auth": {
+        "key": {
+            "param": "api_key",
+            "location": "query"
+        }
+    },
+    "resources": {
+    }
+}
