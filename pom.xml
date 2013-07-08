@@ -10,8 +10,8 @@
     </parent>
 
     <scm>
-        <connection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/tags/masheryiodocs-1.0.0</connection>
-        <developerConnection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/tags/masheryiodocs-1.0.0
+        <connection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/trunk</connection>
+        <developerConnection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/trunk
         </developerConnection>
     </scm>
 
@@ -21,7 +21,7 @@
     <packaging>jar</packaging>
     <groupId>bbc.iplayer.spring</groupId>
     <artifactId>masheryiodocs</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
