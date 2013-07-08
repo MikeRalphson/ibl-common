@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -12,8 +10,8 @@
     </parent>
 
     <scm>
-        <connection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/trunk</connection>
-        <developerConnection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/trunk
+        <connection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/tags/masheryiodocs-1.0.0</connection>
+        <developerConnection>scm:svn:https://repo.dev.bbc.co.uk/services/iBL/libraries/mashery-iodocs/tags/masheryiodocs-1.0.0
         </developerConnection>
     </scm>
 
@@ -23,7 +21,7 @@
     <packaging>jar</packaging>
     <groupId>bbc.iplayer.spring</groupId>
     <artifactId>masheryiodocs</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
