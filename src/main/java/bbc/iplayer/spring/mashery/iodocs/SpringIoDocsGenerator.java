@@ -25,6 +25,7 @@ public class SpringIoDocsGenerator {
     private final IoDocAPI ioDocAPI;
 
     private AnnotatedMethodExtractor annotatedMethodExtractor = new AnnotatedMethodExtractor();
+    public static final Class<RequestMapping> REQUEST_MAPPING_CLASS = RequestMapping.class;
 
     public SpringIoDocsGenerator(final IoDocAPI ioDocAPI) {
         this.ioDocAPI = ioDocAPI;
@@ -69,59 +70,64 @@ public class SpringIoDocsGenerator {
     private <T> Resources getMethodsFromEndpoint(
             Class<T> endpointClass, List<Parameter> extensionParameters, final String envAppVersionPath, Resources result) {
         String endpointPath = "";
-        final Class<RequestMapping> annotationClass = RequestMapping.class;
 
-        endpointPath = getEndpointPath(endpointClass, endpointPath, annotationClass);
+        endpointPath = getEndpointPath(endpointClass, endpointPath, REQUEST_MAPPING_CLASS);
 
         List<Method> annotatedMethods = annotatedMethodExtractor.annotatedMethods(endpointClass);
         for (Method method : annotatedMethods) {
-            String name = endpointClass.getSimpleName() + "_" + method.getName();
-            RequestMethod httpMethod = null;
-            String path = envAppVersionPath;
-            String description = null;
-            List<Parameter> parameters = Lists.newArrayList(extensionParameters);
-            ResourceName resourceName = null;
-
-            for (Annotation annotation : method.getAnnotations()) {
-                final Class<? extends Annotation> annotationType = annotation.annotationType();
-                if (annotationType.equals(IoDocsResourceName.class)) {
-                    final String value = ((IoDocsResourceName) annotation).value();
-                    resourceName = new ResourceName(value);
-                    result.addResource(resourceName);
-                }
-                if (annotationType.equals(IoDocsMethodName.class)) {
-                    name = ((IoDocsMethodName) annotation).value();
-                } else if (annotationType.equals(RequestMapping.class)) {
-                    {
-                        String restMethodPath = endpointPath;
-                        final RequestMapping requestMapping = method.getAnnotation(annotationClass);
-                        if (requestMapping != null) {
-                            httpMethod = getRequestMethod(requestMapping);
-                            restMethodPath = getRequestMappingPath(restMethodPath, requestMapping);
-                        }
-
-                        path += restMethodPath;
-                        path = path.replace("{", ":").replace("}", "");
-                    }
-
-                    description = getFullDescription(method);
-
-                    parameters.addAll(new ParamExtractor().getParamsFromMethod(method));
-                }
-            }
-
-            if (resourceName == null) {
-                throw new IllegalStateException("No resource specified");
-            }
-
-
-            if (httpMethod != null) {
-                final ResourceMethod resourceMethod = new ResourceMethod(
-                        name, httpMethod.name(), description, path, parameters);
-                result.addMethod(resourceName, resourceMethod);
-            }
+            buildResourceForMethod(endpointClass, extensionParameters, envAppVersionPath, result, endpointPath, method);
         }
         return result;
+    }
+
+    private <T> void buildResourceForMethod(Class<T> endpointClass, List<Parameter> extensionParameters, String envAppVersionPath, Resources result, String endpointPath, Method method) {
+        String endPointName = endpointClass.getSimpleName() + "_" + method.getName();
+        RequestMethod httpMethod = null;
+        String path = envAppVersionPath;
+        String description = null;
+        List<Parameter> parameters = Lists.newArrayList(extensionParameters);
+        ResourceName resourceName = null;
+
+        for (Annotation annotation : method.getAnnotations()) {
+            final Class<? extends Annotation> annotationType = annotation.annotationType();
+            if (annotationType.equals(IoDocsResourceName.class)) {
+                resourceName = new ResourceName(((IoDocsResourceName) annotation).value());
+            }
+            if (annotationType.equals(IoDocsMethodName.class)) {
+                endPointName = ((IoDocsMethodName) annotation).value();
+            } else if (annotationType.equals(RequestMapping.class)) {
+                {
+                    String restMethodPath = endpointPath;
+                    final RequestMapping requestMapping = method.getAnnotation(REQUEST_MAPPING_CLASS);
+                    if (requestMapping != null) {
+                        httpMethod = getRequestMethod(requestMapping);
+                        restMethodPath = getRequestMappingPath(restMethodPath, requestMapping);
+                    }
+
+                    path += restMethodPath;
+                    path = path.replace("{", ":").replace("}", "");
+                }
+
+                description = getFullDescription(method);
+
+                parameters.addAll(new ParamExtractor().getParamsFromMethod(method));
+            }
+        }
+
+        validateResourceName(resourceName);
+
+
+        if (httpMethod != null) {
+            final ResourceMethod resourceMethod = new ResourceMethod(
+                    endPointName, httpMethod.name(), description, path, parameters);
+            result.addMethod(resourceName, resourceMethod);
+        }
+    }
+
+    private void validateResourceName(ResourceName resourceName) {
+        if (resourceName == null) {
+            throw new IllegalStateException("No resource specified");
+        }
     }
 
     private String getRequestMappingPath(String restMethodPath, RequestMapping requestMapping) {
