@@ -40,6 +40,8 @@ public class SpringIoDocsGenerator {
      *                            as possible.
      *                            For enums the enum descriptions are not mandatory but enums
      *                            are required if enum descriptions are specified.
+     *                            Certain Annotations can be grouped in a new annotation
+     *                            to improve reuse. See the example in the test package.
      * @param extensionParameters parameters that are applicable to all endpoints
      * @return JSON as a string.
      */
