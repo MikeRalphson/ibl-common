@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * The value placed in an Integer parameter's field in an I/O Docs form.
+ * * The default value in the RequestParam takes precedence.
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

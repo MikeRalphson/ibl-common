@@ -34,6 +34,12 @@ public class SpringIoDocsGenerator {
      * Generates IO Docs JSON string
      *
      * @param endpoints           Classes with Spring request mappings annotations
+     *                            The methods and params should be annotated with
+     *                            the annotations in the annotations package. As
+     *                            much info is taken from the RequestParam annotation
+     *                            as possible.
+     *                            For enums the enum descriptions are not mandatory but enums
+     *                            are required if enum descriptions are specified.
      * @param extensionParameters parameters that are applicable to all endpoints
      * @return JSON as a string.
      */
