@@ -5,7 +5,7 @@
 
 	<artifactId>ibl-common</artifactId>
 	<packaging>jar</packaging>
-	<name>BBC iPlayer Business Logic (iBL) - Common</name>
+	<name>BBC iPlayer Business Layer (iBL) - Common</name>
 
 	<parent>
 		<groupId>bbc.iplayer.ibl</groupId>
