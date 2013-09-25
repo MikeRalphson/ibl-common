@@ -1,4 +1,4 @@
-package bbc.iplayer.ibl.model.schema.adapters;
+package bbc.iplayer.ibl.common.schema.adapters;
 
 import org.joda.time.Period;
 import org.junit.Test;

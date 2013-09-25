@@ -1,4 +1,4 @@
-package bbc.iplayer.common.definition;
+package bbc.iplayer.ibl.common.definition;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

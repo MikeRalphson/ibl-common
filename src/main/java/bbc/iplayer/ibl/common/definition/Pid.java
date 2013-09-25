@@ -1,4 +1,4 @@
-package bbc.iplayer.common.definition;
+package bbc.iplayer.ibl.common.definition;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package bbc.iplayer.nitro.model.adapters;
+package bbc.iplayer.ibl.common.schema.adapters;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
