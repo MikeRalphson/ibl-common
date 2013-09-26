@@ -3,6 +3,10 @@ package bbc.iplayer.ibl.common.model.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnoreType;
+
 import bbc.iplayer.ibl.common.model.KeyValuePair;
 import bbc.iplayer.ibl.common.model.KeyValuePairList;
 
@@ -25,6 +29,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePairList;
  * @see java.util.ArrayList
  *
  */
+@XmlTransient
+@JsonIgnoreType
 public class DefaultKeyValuePairListImpl
 extends ArrayList<KeyValuePair<String, String>>
 implements KeyValuePairList<String, String> {
