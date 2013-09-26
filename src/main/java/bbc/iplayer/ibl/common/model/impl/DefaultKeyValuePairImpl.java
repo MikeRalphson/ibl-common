@@ -1,9 +1,12 @@
 package bbc.iplayer.ibl.common.model.impl;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 import bbc.iplayer.ibl.common.model.KeyValuePair;
 
 /**
@@ -23,8 +26,11 @@ import bbc.iplayer.ibl.common.model.KeyValuePair;
  * @see bbc.iplayer.ibl.common.model.KeyValuePair
  *
  */
+<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 public class DefaultKeyValuePairImpl
 implements KeyValuePair<String, String> {
 
@@ -129,6 +135,7 @@ implements KeyValuePair<String, String> {
 
 		return clonedObject;
 	}
+<<<<<<< HEAD
 
 	@Override
 	public int hashCode() {
@@ -162,4 +169,6 @@ implements KeyValuePair<String, String> {
 			return false;
 		return true;
 	}
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 }

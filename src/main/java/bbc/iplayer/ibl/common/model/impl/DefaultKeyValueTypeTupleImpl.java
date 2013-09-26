@@ -5,10 +5,13 @@ package bbc.iplayer.ibl.common.model.impl;
 
 import java.io.Serializable;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
 
 /**
@@ -30,8 +33,11 @@ import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
  * @see bbc.iplayer.ibl.common.model.KeyValueTypeTuple
  *
  */
+<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 public class DefaultKeyValueTypeTupleImpl
 extends DefaultKeyValuePairImpl
 implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
@@ -111,6 +117,7 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	public KeyValueTypeTuple<String, String, Class<? extends Serializable>> clone() {
 		KeyValueTypeTuple<String, String, Class<? extends Serializable>> clonedObject = null;
 
+<<<<<<< HEAD
 		clonedObject = new DefaultKeyValueTypeTupleImpl(getKey(), getValue(), getType());
 
 		return clonedObject;
@@ -141,4 +148,10 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 			return false;
 		return true;
 	}
+=======
+		clonedObject = new DefaultKeyValueTypeTupleImpl(getKey(), getValue(), getClass());
+
+		return clonedObject;
+	}
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 }

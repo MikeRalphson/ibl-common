@@ -3,11 +3,14 @@
  */
 package bbc.iplayer.ibl.common.model.impl;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 import bbc.iplayer.ibl.common.model.KeyValueAttributesTuple;
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
@@ -32,8 +35,11 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see bbc.iplayer.ibl.common.model.impl.DefaultKeyValuePairMapImpl
  *
  */
+<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 public class DefaultKeyValueAttributesTupleImpl
 extends DefaultKeyValuePairImpl
 implements KeyValueAttributesTuple<String, String> {
@@ -83,8 +89,11 @@ implements KeyValueAttributesTuple<String, String> {
 	}
 
 	@Override
+<<<<<<< HEAD
 	@XmlTransient
 	@JsonIgnore
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 	public KeyValuePairMap<String, String> getAttributes() {
 		return attributes;
 	}
@@ -118,6 +127,7 @@ implements KeyValueAttributesTuple<String, String> {
 
 		return clonedObject;
 	}
+<<<<<<< HEAD
 
 	@Override
 	public int hashCode() {
@@ -144,4 +154,6 @@ implements KeyValueAttributesTuple<String, String> {
 			return false;
 		return true;
 	}
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 }
