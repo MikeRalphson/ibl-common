@@ -3,10 +3,13 @@ package bbc.iplayer.ibl.common.model.impl;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
 /**
@@ -35,8 +38,11 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see java.util.HashMap
  *
  */
+<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 public class DefaultKeyValuePairMapImpl
 extends LinkedHashMap<String, String>
 implements KeyValuePairMap<String, String> {

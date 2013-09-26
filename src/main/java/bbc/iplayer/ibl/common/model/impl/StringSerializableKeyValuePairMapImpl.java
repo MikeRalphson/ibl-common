@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
 /**
@@ -36,8 +39,11 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see java.util.HashMap
  *
  */
+<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
+=======
+>>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
 public class StringSerializableKeyValuePairMapImpl<V extends Serializable> extends HashMap<String, V>
 implements KeyValuePairMap<String, V> {
 
