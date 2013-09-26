@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnoreType;
+
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
 /**
@@ -35,6 +39,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see java.util.LinkedHashMap
  *
  */
+@XmlTransient
+@JsonIgnoreType
 public class OrderedStringSerializableKeyValuePairMapImpl<V extends Serializable>
 extends LinkedHashMap<String, V> implements KeyValuePairMap<String, V> {
 

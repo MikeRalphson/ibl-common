@@ -1,5 +1,7 @@
 package bbc.iplayer.ibl.common.model.impl;
 
+import java.nio.ByteBuffer;
+
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
@@ -8,13 +10,13 @@ import bbc.iplayer.ibl.common.model.KeyValuePair;
 
 /**
  * <p>
- * 	This class provides a default implementation of the KeyValuePair interface.
+ * 	This class provides an alternative implementation of the KeyValuePair interface.
  * </p>
  * <p>
  * 	Also:
  * 	<ul>
  * 		<li>key is a String</li>
- * 		<li>value is a String</li>
+ * 		<li>value is a ByteBuffer</li>
  * 	</ul>
  * </p>
  *
@@ -25,33 +27,33 @@ import bbc.iplayer.ibl.common.model.KeyValuePair;
  */
 @XmlTransient
 @JsonIgnoreType
-public class DefaultKeyValuePairImpl
-implements KeyValuePair<String, String> {
+public class StringByteBufferKeyValuePairImpl
+implements KeyValuePair<String, ByteBuffer> {
 
 	private static final long serialVersionUID = 1L;
 
 	private String key; // used to store the key of the (key, value) pair
-	private String value; // used to store the value of the (key, value) pair
+	private ByteBuffer value; // used to store the value of the (key, value) pair
 
 	/**
 	 * <p>
-	 * 	Default constructor that creates an instance of DefaultKeyValuePairImpl
+	 * 	Default constructor that creates an instance of StringByteBufferKeyValuePairImpl
 	 * 	with empty (zero-length String) key and value
 	 * </p>
 	 *
 	 * @post: this.key != null: true
 	 * @post: this.key == "": true
 	 * @post: this.value != null: true
-	 * @post: this.value == "": true
+	 * @post: this.value.hasRemaining(): false
 	 */
-	public DefaultKeyValuePairImpl() {
+	public StringByteBufferKeyValuePairImpl() {
 		super();
 		clear();
 	}
 
 	/**
 	 * <p>
-	 * 	Constructor that creates an instance of DefaultKeyValuePairImpl with the
+	 * 	Constructor that creates an instance of StringByteBufferKeyValuePairImpl with the
 	 * 	key and value provided
 	 * </p>
 	 *
@@ -61,9 +63,9 @@ implements KeyValuePair<String, String> {
 	 * @post: this.key != null: true
 	 * @post: this.key == key || this.key == "": true
 	 * @post: this.value != null: true
-	 * @post: this.value == value || this.value == "": true
+	 * @post: this.value == value || this.value.hasRemaining(): false
 	 */
-	public DefaultKeyValuePairImpl(String key, String value) {
+	public StringByteBufferKeyValuePairImpl(String key, ByteBuffer value) {
 		super();
 		setKey(key);
 		setValue(value);
@@ -88,7 +90,7 @@ implements KeyValuePair<String, String> {
 	}
 
 	@Override
-	public String getValue() {
+	public ByteBuffer getValue() {
 		return value;
 	}
 
@@ -96,9 +98,9 @@ implements KeyValuePair<String, String> {
 	/**
 	 * @post: this.value != null: true
 	 */
-	public void setValue(String value) {
+	public void setValue(ByteBuffer value) {
 		if (value == null) {
-			this.value = "";
+			this.value = ByteBuffer.allocate(1024);
 		}
 		else {
 			this.value = value;
@@ -112,20 +114,20 @@ implements KeyValuePair<String, String> {
 
 	@Override
 	public boolean isEmpty() {
-		return ((getKey().length() == 0) && (getValue().length() == 0));
+		return ((getKey().length() == 0) && (!getValue().hasRemaining()));
 	}
 
 	@Override
 	public void clear() {
 		setKey("");
-		setValue("");
+		setValue(ByteBuffer.allocate(1024));
 	}
 
 	@Override
-	public KeyValuePair<String, String> clone() {
-		KeyValuePair<String, String> clonedObject = null;
+	public KeyValuePair<String, ByteBuffer> clone() {
+		KeyValuePair<String, ByteBuffer> clonedObject = null;
 
-		clonedObject = new DefaultKeyValuePairImpl(getKey(), getValue());
+		clonedObject = new StringByteBufferKeyValuePairImpl(getKey(), getValue());
 
 		return clonedObject;
 	}
@@ -147,7 +149,7 @@ implements KeyValuePair<String, String> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DefaultKeyValuePairImpl other = (DefaultKeyValuePairImpl) obj;
+		StringByteBufferKeyValuePairImpl other = (StringByteBufferKeyValuePairImpl) obj;
 		if (key == null) {
 			if (other.key != null)
 				return false;
