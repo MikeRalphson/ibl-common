@@ -3,6 +3,10 @@
  */
 package bbc.iplayer.ibl.common.model.impl;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnoreType;
+
 import bbc.iplayer.ibl.common.model.KeyValueAttributesTuple;
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
@@ -27,6 +31,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see bbc.iplayer.ibl.common.model.impl.DefaultKeyValuePairMapImpl
  *
  */
+@XmlTransient
+@JsonIgnoreType
 public class DefaultKeyValueAttributesTupleImpl
 extends DefaultKeyValuePairImpl
 implements KeyValueAttributesTuple<String, String> {
@@ -108,5 +114,31 @@ implements KeyValueAttributesTuple<String, String> {
 		clonedObject = new DefaultKeyValueAttributesTupleImpl(getKey(), getValue(), getAttributes());
 
 		return clonedObject;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DefaultKeyValueAttributesTupleImpl other = (DefaultKeyValueAttributesTupleImpl) obj;
+		if (attributes == null) {
+			if (other.attributes != null)
+				return false;
+		}
+		else if (!attributes.equals(other.attributes))
+			return false;
+		return true;
 	}
 }
