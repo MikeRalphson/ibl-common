@@ -3,6 +3,10 @@ package bbc.iplayer.ibl.common.model.impl;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnoreType;
+
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
 /**
@@ -31,6 +35,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see java.util.HashMap
  *
  */
+@XmlTransient
+@JsonIgnoreType
 public class DefaultKeyValuePairMapImpl
 extends LinkedHashMap<String, String>
 implements KeyValuePairMap<String, String> {

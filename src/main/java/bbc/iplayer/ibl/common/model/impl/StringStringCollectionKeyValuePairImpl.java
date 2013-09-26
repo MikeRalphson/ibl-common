@@ -1,5 +1,8 @@
 package bbc.iplayer.ibl.common.model.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
@@ -8,13 +11,13 @@ import bbc.iplayer.ibl.common.model.KeyValuePair;
 
 /**
  * <p>
- * 	This class provides a default implementation of the KeyValuePair interface.
+ * 	This class provides an alternative implementation of the KeyValuePair interface.
  * </p>
  * <p>
  * 	Also:
  * 	<ul>
  * 		<li>key is a String</li>
- * 		<li>value is a String</li>
+ * 		<li>value is a Collection<String></li>
  * 	</ul>
  * </p>
  *
@@ -25,33 +28,33 @@ import bbc.iplayer.ibl.common.model.KeyValuePair;
  */
 @XmlTransient
 @JsonIgnoreType
-public class DefaultKeyValuePairImpl
-implements KeyValuePair<String, String> {
+public class StringStringCollectionKeyValuePairImpl
+implements KeyValuePair<String, Collection<String>> {
 
 	private static final long serialVersionUID = 1L;
 
 	private String key; // used to store the key of the (key, value) pair
-	private String value; // used to store the value of the (key, value) pair
+	private Collection<String> value; // used to store the value of the (key, value) pair
 
 	/**
 	 * <p>
-	 * 	Default constructor that creates an instance of DefaultKeyValuePairImpl
-	 * 	with empty (zero-length String) key and value
+	 * 	Default constructor that creates an instance of StringStringCollectionKeyValuePairImpl
+	 * 	with empty (zero-length String) key and empty collection of String for value
 	 * </p>
 	 *
 	 * @post: this.key != null: true
 	 * @post: this.key == "": true
 	 * @post: this.value != null: true
-	 * @post: this.value == "": true
+	 * @post: this.value.isEmpty(): true
 	 */
-	public DefaultKeyValuePairImpl() {
+	public StringStringCollectionKeyValuePairImpl() {
 		super();
 		clear();
 	}
 
 	/**
 	 * <p>
-	 * 	Constructor that creates an instance of DefaultKeyValuePairImpl with the
+	 * 	Constructor that creates an instance of StringStringCollectionKeyValuePairImpl with the
 	 * 	key and value provided
 	 * </p>
 	 *
@@ -61,9 +64,9 @@ implements KeyValuePair<String, String> {
 	 * @post: this.key != null: true
 	 * @post: this.key == key || this.key == "": true
 	 * @post: this.value != null: true
-	 * @post: this.value == value || this.value == "": true
+	 * @post: this.value == value || this.value.isEmpty(): true
 	 */
-	public DefaultKeyValuePairImpl(String key, String value) {
+	public StringStringCollectionKeyValuePairImpl(String key, Collection<String> value) {
 		super();
 		setKey(key);
 		setValue(value);
@@ -88,7 +91,7 @@ implements KeyValuePair<String, String> {
 	}
 
 	@Override
-	public String getValue() {
+	public Collection<String> getValue() {
 		return value;
 	}
 
@@ -96,9 +99,9 @@ implements KeyValuePair<String, String> {
 	/**
 	 * @post: this.value != null: true
 	 */
-	public void setValue(String value) {
+	public void setValue(Collection<String> value) {
 		if (value == null) {
-			this.value = "";
+			this.value = new ArrayList<String>();
 		}
 		else {
 			this.value = value;
@@ -112,20 +115,20 @@ implements KeyValuePair<String, String> {
 
 	@Override
 	public boolean isEmpty() {
-		return ((getKey().length() == 0) && (getValue().length() == 0));
+		return ((getKey().length() == 0) && (getValue().isEmpty()));
 	}
 
 	@Override
 	public void clear() {
 		setKey("");
-		setValue("");
+		setValue(new ArrayList<String>());
 	}
 
 	@Override
-	public KeyValuePair<String, String> clone() {
-		KeyValuePair<String, String> clonedObject = null;
+	public KeyValuePair<String, Collection<String>> clone() {
+		KeyValuePair<String, Collection<String>> clonedObject = null;
 
-		clonedObject = new DefaultKeyValuePairImpl(getKey(), getValue());
+		clonedObject = new StringStringCollectionKeyValuePairImpl(getKey(), getValue());
 
 		return clonedObject;
 	}
@@ -147,7 +150,7 @@ implements KeyValuePair<String, String> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DefaultKeyValuePairImpl other = (DefaultKeyValuePairImpl) obj;
+		StringStringCollectionKeyValuePairImpl other = (StringStringCollectionKeyValuePairImpl) obj;
 		if (key == null) {
 			if (other.key != null)
 				return false;

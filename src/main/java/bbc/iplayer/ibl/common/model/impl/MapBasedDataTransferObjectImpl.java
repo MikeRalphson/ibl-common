@@ -2,6 +2,10 @@ package bbc.iplayer.ibl.common.model.impl;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnoreType;
+
 import bbc.iplayer.ibl.common.model.MapBasedDataTransferObject;
 
 /**
@@ -33,6 +37,8 @@ import bbc.iplayer.ibl.common.model.MapBasedDataTransferObject;
  * @see bbc.iplayer.ibl.common.model.impl.OrderedStringSerializableKeyValuePairMapImpl
  *
  */
+@XmlTransient
+@JsonIgnoreType
 public class MapBasedDataTransferObjectImpl
 extends OrderedStringSerializableKeyValuePairMapImpl<Serializable>
 implements MapBasedDataTransferObject
