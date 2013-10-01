@@ -1,4 +1,4 @@
-package bbc.iplayer.common.collections;
+package bbc.iplayer.ibl.common.collections;
 
 import java.util.Collection;
 
