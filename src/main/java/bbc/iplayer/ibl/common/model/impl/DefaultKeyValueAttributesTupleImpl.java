@@ -5,6 +5,7 @@ package bbc.iplayer.ibl.common.model.impl;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
 import bbc.iplayer.ibl.common.model.KeyValueAttributesTuple;
@@ -82,6 +83,8 @@ implements KeyValueAttributesTuple<String, String> {
 	}
 
 	@Override
+	@XmlTransient
+	@JsonIgnore
 	public KeyValuePairMap<String, String> getAttributes() {
 		return attributes;
 	}

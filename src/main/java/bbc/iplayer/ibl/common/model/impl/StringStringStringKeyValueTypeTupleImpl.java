@@ -3,8 +3,6 @@
  */
 package bbc.iplayer.ibl.common.model.impl;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
@@ -13,7 +11,7 @@ import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
 
 /**
  * <p>
- * 	This class provides a default implementation of the KeyValueTypeTuple
+ * 	This class provides an alternative implementation of the KeyValueTypeTuple
  * 	interface.
  * </p>
  * <p>
@@ -21,7 +19,7 @@ import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
  * 	<ul>
  * 		<li>key is a String</li>
  * 		<li>value is a String</li>
- * 		<li>type is a Class<? extends Serializable></li>
+ * 		<li>type is a String</li>
  * 	</ul>
  * </p>
  *
@@ -32,17 +30,17 @@ import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
  */
 @XmlTransient
 @JsonIgnoreType
-public class DefaultKeyValueTypeTupleImpl
+public class StringStringStringKeyValueTypeTupleImpl
 extends DefaultKeyValuePairImpl
-implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
+implements KeyValueTypeTuple<String, String, String> {
 
 	private static final long serialVersionUID = 1L;
 
-	private Class<? extends Serializable> type; // used to store the type of the (key, value, type) tuple
+	private String type; // used to store the type of the (key, value, type) tuple
 
 	/**
 	 * <p>
-	 * 	Default constructor that creates an instance of DefaultKeyValueTypeTupleImpl
+	 * 	Default constructor that creates an instance of StringStringStringKeyValueTypeTupleImpl
 	 * 	with empty (zero-length String) key and value and Object.class as the type
 	 * </p>
 	 *
@@ -51,9 +49,9 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	 * @post: this.value != null: true
 	 * @post: this.value == "": true
 	 * @post: this.type != null: true
-	 * @post: this.type == Serializable.class: true
+	 * @post: this.type == "": true
 	 */
-	public DefaultKeyValueTypeTupleImpl() {
+	public StringStringStringKeyValueTypeTupleImpl() {
 		super();
 		clear();
 		setType(null);
@@ -61,7 +59,7 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 
 	/**
 	 * <p>
-	 * 	Constructor that creates an instance of DefaultKeyValueTypeTupleImpl with the
+	 * 	Constructor that creates an instance of StringStringStringKeyValueTypeTupleImpl with the
 	 * 	key, value and type provided
 	 * </p>
 	 *
@@ -74,22 +72,22 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	 * @post: this.value != null: true
 	 * @post: this.value == value || this.value == "": true
 	 * @post: this.type != null: true
-	 * @post: this.type == type || this.type == Serializable.class: true
+	 * @post: this.type == type || this.type == "": true
 	 */
-	public DefaultKeyValueTypeTupleImpl(String key, String value, Class<? extends Serializable> type) {
+	public StringStringStringKeyValueTypeTupleImpl(String key, String value, String type) {
 		super(key, value);
 		setType(type);
 	}
 
 	@Override
-	public Class<? extends Serializable> getType() {
+	public String getType() {
 		return type;
 	}
 
 	@Override
-	public void setType(Class<? extends Serializable> type) {
+	public void setType(String type) {
 		if (type == null) {
-			this.type = Serializable.class;
+			this.type = "";
 		}
 		else {
 			this.type = type;
@@ -108,10 +106,10 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	}
 
 	@Override
-	public KeyValueTypeTuple<String, String, Class<? extends Serializable>> clone() {
-		KeyValueTypeTuple<String, String, Class<? extends Serializable>> clonedObject = null;
+	public KeyValueTypeTuple<String, String, String> clone() {
+		KeyValueTypeTuple<String, String, String> clonedObject = null;
 
-		clonedObject = new DefaultKeyValueTypeTupleImpl(getKey(), getValue(), getType());
+		clonedObject = new StringStringStringKeyValueTypeTupleImpl(getKey(), getValue(), getType());
 
 		return clonedObject;
 	}
@@ -132,7 +130,7 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DefaultKeyValueTypeTupleImpl other = (DefaultKeyValueTypeTupleImpl) obj;
+		StringStringStringKeyValueTypeTupleImpl other = (StringStringStringKeyValueTypeTupleImpl) obj;
 		if (type == null) {
 			if (other.type != null)
 				return false;
