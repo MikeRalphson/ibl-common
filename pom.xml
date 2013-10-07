@@ -13,4 +13,8 @@
 		<version>0.17.0</version>
 	</parent>
 
+<<<<<<< HEAD
 </project>
+=======
+</project>
+>>>>>>> IBL-7: added REST controller, modified Service class, changed from .xml

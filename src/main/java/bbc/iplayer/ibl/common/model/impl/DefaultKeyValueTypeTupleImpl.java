@@ -1,23 +1,11 @@
-/**
- *
- */
 package bbc.iplayer.ibl.common.model.impl;
 
 import java.io.Serializable;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
-<<<<<<< HEAD
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
 
 /**
@@ -39,16 +27,8 @@ import bbc.iplayer.ibl.common.model.KeyValueTypeTuple;
  * @see bbc.iplayer.ibl.common.model.KeyValueTypeTuple
  *
  */
-<<<<<<< HEAD
-<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
-@XmlTransient
-@JsonIgnoreType
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 public class DefaultKeyValueTypeTupleImpl
 extends DefaultKeyValuePairImpl
 implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
@@ -128,7 +108,6 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	public KeyValueTypeTuple<String, String, Class<? extends Serializable>> clone() {
 		KeyValueTypeTuple<String, String, Class<? extends Serializable>> clonedObject = null;
 
-<<<<<<< HEAD
 		clonedObject = new DefaultKeyValueTypeTupleImpl(getKey(), getValue(), getType());
 
 		return clonedObject;
@@ -159,39 +138,4 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 			return false;
 		return true;
 	}
-=======
-		clonedObject = new DefaultKeyValueTypeTupleImpl(getKey(), getValue(), getClass());
-
-		return clonedObject;
-	}
-<<<<<<< HEAD
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DefaultKeyValueTypeTupleImpl other = (DefaultKeyValueTypeTupleImpl) obj;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		}
-		else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 }

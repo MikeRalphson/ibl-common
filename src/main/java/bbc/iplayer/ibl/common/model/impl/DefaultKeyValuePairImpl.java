@@ -6,6 +6,7 @@ package bbc.iplayer.ibl.common.model.impl;
 >>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
 <<<<<<< HEAD
@@ -123,11 +124,15 @@ implements KeyValuePair<String, String> {
 	}
 
 	@Override
+	@XmlTransient
+	@JsonIgnore	
 	public boolean isValid() {
 		return ((getKey() != null) && (getKey().length() != 0));
 	}
 
 	@Override
+	@XmlTransient
+	@JsonIgnore	
 	public boolean isEmpty() {
 		return ((getKey().length() == 0) && (getValue().length() == 0));
 	}

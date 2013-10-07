@@ -1,6 +1,3 @@
-/**
- *
- */
 package bbc.iplayer.ibl.common.model.impl;
 
 import javax.xml.bind.annotation.XmlTransient;
