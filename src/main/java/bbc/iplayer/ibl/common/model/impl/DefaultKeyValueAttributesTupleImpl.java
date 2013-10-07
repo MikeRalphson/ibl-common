@@ -100,6 +100,8 @@ implements KeyValueAttributesTuple<String, String> {
 	}
 
 	@Override
+	@XmlTransient
+	@JsonIgnore	
 	public boolean isEmpty() {
 		return (super.isEmpty() && (getAttributes().isEmpty()));
 	}
