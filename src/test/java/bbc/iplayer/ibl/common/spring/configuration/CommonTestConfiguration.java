@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({CommonConfiguration.class})
+@Import(value = CommonConfiguration.class)
 public class CommonTestConfiguration {
+
 }
