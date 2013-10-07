@@ -2,6 +2,7 @@ package bbc.iplayer.ibl.common.spring.configuration;
 
 import org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertThat;
 @Configurable
 @ContextConfiguration(classes = CommonTestConfiguration.class)
 //@ContextConfiguration(locations = "classpath*:META-INF/spring/ibl-common-context.xml")
+@Ignore()
 public class CommonConfigTest {
 
     @Autowired
