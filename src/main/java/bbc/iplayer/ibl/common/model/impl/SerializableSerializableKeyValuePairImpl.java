@@ -153,8 +153,4 @@ implements KeyValuePair<K, V> {
 			return false;
 		return true;
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 9b253415eedd43c6cd6fed6ff7967e7f62f2c13f
