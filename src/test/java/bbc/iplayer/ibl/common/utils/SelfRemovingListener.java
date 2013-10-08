@@ -1,4 +1,4 @@
-package bbc.iplayer.common.utils;
+package bbc.iplayer.ibl.common.utils;
 
 // Listener to remove itself from the Listenable's notification list
 public class SelfRemovingListener extends ListenerStub {

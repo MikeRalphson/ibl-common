@@ -1,4 +1,4 @@
-package bbc.iplayer.common.utils;
+package bbc.iplayer.ibl.common.utils;
 
 import org.apache.commons.lang.builder.ToStringStyle;
 

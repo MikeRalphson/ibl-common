@@ -1,4 +1,4 @@
-package bbc.iplayer.common.utils;
+package bbc.iplayer.ibl.common.utils;
 
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;

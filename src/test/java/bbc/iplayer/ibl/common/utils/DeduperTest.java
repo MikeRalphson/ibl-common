@@ -1,4 +1,4 @@
-package bbc.iplayer.common.utils;
+package bbc.iplayer.ibl.common.utils;
 
 import bbc.iplayer.ibl.common.definition.Pid;
 import com.google.common.collect.Lists;
