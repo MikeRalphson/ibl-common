@@ -1,4 +1,4 @@
-package bbc.iplayer.ibl.utils;
+package bbc.iplayer.ibl.common.utils;
 
 import com.google.common.base.Preconditions;
 
