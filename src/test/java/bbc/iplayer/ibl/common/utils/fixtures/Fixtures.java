@@ -1,4 +1,4 @@
-package bbc.iplayer.ibl.utils.fixtures;
+package bbc.iplayer.ibl.common.utils.fixtures;
 
 import com.google.common.io.Resources;
 import org.springframework.core.io.ClassPathResource;

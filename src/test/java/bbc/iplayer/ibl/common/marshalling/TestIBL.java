@@ -1,4 +1,4 @@
-package bbc.iplayer.common.marshalling;
+package bbc.iplayer.ibl.common.marshalling;
 
 import bbc.iplayer.ibl.common.schema.adapters.IBLDateTimeAdapter;
 import org.joda.time.DateTime;

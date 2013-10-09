@@ -1,6 +1,5 @@
-package bbc.iplayer.ibl.utils;
+package bbc.iplayer.ibl.common.utils;
 
-import bbc.iplayer.ibl.common.utils.IOConversions;
 import org.junit.Test;
 
 import javax.xml.transform.stream.StreamSource;

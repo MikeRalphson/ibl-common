@@ -1,4 +1,4 @@
-package bbc.iplayer.common.marshalling;
+package bbc.iplayer.ibl.common.marshalling;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 

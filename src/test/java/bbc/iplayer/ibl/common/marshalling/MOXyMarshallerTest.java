@@ -1,7 +1,7 @@
-package bbc.iplayer.common.marshalling;
+package bbc.iplayer.ibl.common.marshalling;
 
 import bbc.iplayer.ibl.common.utils.IOConversions;
-import bbc.iplayer.ibl.utils.fixtures.Fixtures;
+import bbc.iplayer.ibl.common.utils.fixtures.Fixtures;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.oxm.MediaType;
 import org.junit.BeforeClass;
