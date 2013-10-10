@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+/**
+ *
+ */
+>>>>>>> f70a0fd8377ff81fb47fedc38f87cdf50fdba549
 package bbc.iplayer.ibl.common.model.impl;
 
 import javax.xml.bind.annotation.XmlTransient;

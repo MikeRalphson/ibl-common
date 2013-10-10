@@ -4,19 +4,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
-<<<<<<< HEAD
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import bbc.iplayer.ibl.common.model.KeyValuePairMap;
 
 /**
@@ -45,16 +36,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  * @see java.util.HashMap
  *
  */
-<<<<<<< HEAD
-<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
-@XmlTransient
-@JsonIgnoreType
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 public class StringSerializableKeyValuePairMapImpl<V extends Serializable> extends HashMap<String, V>
 implements KeyValuePairMap<String, V> {
 

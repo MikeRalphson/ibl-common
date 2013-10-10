@@ -1,19 +1,10 @@
 package bbc.iplayer.ibl.common.model.impl;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreType;
 
-<<<<<<< HEAD
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 import bbc.iplayer.ibl.common.model.KeyValuePair;
 
 /**
@@ -33,16 +24,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePair;
  * @see bbc.iplayer.ibl.common.model.KeyValuePair
  *
  */
-<<<<<<< HEAD
-<<<<<<< HEAD
 @XmlTransient
 @JsonIgnoreType
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
-@XmlTransient
-@JsonIgnoreType
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 public class DefaultKeyValuePairImpl
 implements KeyValuePair<String, String> {
 
@@ -151,10 +134,6 @@ implements KeyValuePair<String, String> {
 
 		return clonedObject;
 	}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 
 	@Override
 	public int hashCode() {
@@ -188,9 +167,4 @@ implements KeyValuePair<String, String> {
 			return false;
 		return true;
 	}
-<<<<<<< HEAD
-=======
->>>>>>> Added generic KeyValuePair, KeyValueTypeTuple, KeyValueAttributesTuple
-=======
->>>>>>> IBL-7: reworked common model, added mapper between Amazon specific
 }
