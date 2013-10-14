@@ -12,7 +12,7 @@ import bbc.iplayer.ibl.common.SimpleParentEntity;
 
 public class XmlMarshallingUnmarshallingHelperTest extends XMLTestCase {
 
-	private static final String SAMPLE_XML_FILENAME = "target/test-classes/fixtures/Simple.xml";
+	private static final String SAMPLE_XML_FILENAME = "target/test-classes/fixtures/util/Simple.xml";
 	private static final String SAMPLE_XML_DATA;
 	static {
 		try {

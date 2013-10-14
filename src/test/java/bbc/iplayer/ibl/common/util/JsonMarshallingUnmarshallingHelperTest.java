@@ -13,7 +13,7 @@ import bbc.iplayer.ibl.common.SimpleParentEntity;
 
 public class JsonMarshallingUnmarshallingHelperTest {
 
-	private static final String SAMPLE_JSON_FILENAME = "target/test-classes/fixtures/Simple.json";
+	private static final String SAMPLE_JSON_FILENAME = "target/test-classes/fixtures/util/Simple.json";
 	private static final String SAMPLE_JSON_DATA;
 	static {
 		try {

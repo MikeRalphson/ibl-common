@@ -7,8 +7,8 @@ import org.junit.Test;
 
 public class FileResourcesHelperTest {
 
-	private static final String SAMPLE_FILES_LOCATION = "target/test-classes/fixtures/";
-	private static final String SAMPLE_FILE_FILENAME = "target/test-classes/fixtures/Simple.txt";
+	private static final String SAMPLE_FILES_LOCATION = "target/test-classes/fixtures/util";
+	private static final String SAMPLE_FILE_FILENAME = "target/test-classes/fixtures/util/Simple.txt";
 	private static final String SAMPLE_FILE_CONTENTS_WITH_NEWLINES_AND_SPACES = "line1\nline2  \n(two spaces at the end of previous line)\nline3   \n(three spaces at the end of previous line)\n";
 	private static final String SAMPLE_FILE_CONTENTS_WITH_NEWLINES_AND_NO_SPACES = "line1\nline2\n(two spaces at the end of previous line)\nline3\n(three spaces at the end of previous line)\n";
 	private static final String SAMPLE_FILE_CONTENTS_NO_NEWLINES_AND_SPACES = "line1line2  (two spaces at the end of previous line)line3   (three spaces at the end of previous line)";
