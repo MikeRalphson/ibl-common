@@ -4,13 +4,6 @@ import org.apache.log4j.Logger;
 
 import java.util.concurrent.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: spragn01
- * Date: 11/10/2013
- * Time: 16:33
- * To change this template use File | Settings | File Templates.
- */
 public class LoggingThreadPoolExecutor extends ThreadPoolExecutor {
 
     private final static Logger LOG = Logger.getLogger(LoggingThreadPoolExecutor.class);
