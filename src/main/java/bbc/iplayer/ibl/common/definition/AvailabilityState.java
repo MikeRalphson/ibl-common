@@ -1,5 +1,5 @@
 package bbc.iplayer.ibl.common.definition;
 
-public enum AvailabilityStates {
+public enum AvailabilityState {
     AVAILABLE, SOON, ALL
 }
