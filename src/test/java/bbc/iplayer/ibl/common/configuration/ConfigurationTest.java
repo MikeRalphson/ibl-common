@@ -20,7 +20,7 @@ public class ConfigurationTest {
 	@Test
 	public void testAPropertyHasCorrectValue() throws Exception {
 		assertNotNull(aProperty);
-		assertEquals("32", aProperty);
+		assertEquals("100", aProperty);
 	}
 }
 
