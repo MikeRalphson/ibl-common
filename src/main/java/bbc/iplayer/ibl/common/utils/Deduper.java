@@ -10,18 +10,31 @@ public class Deduper {
 
     }
 
-    public static <T> List<T> deDupe(List<T> pids) {
+    public static <T> List<T> deDupe(List<T> items) {
 
         Set<T> tags = new HashSet<T>();
         List<T> result = new ArrayList<T>();
 
-        for (T pid : pids) {
-            if (!tags.contains(pid)) {
-                result.add(pid);
-                tags.add(pid);
+        for (T item : items) {
+            if (!tags.contains(item)) {
+                result.add(item);
+                tags.add(item);
             }
         }
 
+        return result;
+    }
+
+    public static <T> List<T> deDupe(T[] items) {
+        Set<T> tags = new HashSet<T>();
+        List<T> result = new ArrayList<T>();
+
+        for (T item : items) {
+            if (!tags.contains(item)) {
+                result.add(item);
+                tags.add(item);
+            }
+        }
         return result;
     }
 }
