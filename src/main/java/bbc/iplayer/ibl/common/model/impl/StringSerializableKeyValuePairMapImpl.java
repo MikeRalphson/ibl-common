@@ -38,7 +38,8 @@ import bbc.iplayer.ibl.common.model.KeyValuePairMap;
  */
 @XmlTransient
 @JsonIgnoreType
-public class StringSerializableKeyValuePairMapImpl<V extends Serializable> extends HashMap<String, V>
+public class StringSerializableKeyValuePairMapImpl<V extends Serializable> 
+extends HashMap<String, V>
 implements KeyValuePairMap<String, V> {
 
 	private static final long serialVersionUID = 1L;
