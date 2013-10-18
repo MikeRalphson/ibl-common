@@ -17,6 +17,7 @@ extends HashMap<String, T>{
 
 	public AbstractElementWrapper() {
 		super();
+		setTotalCount(0);
 	}
 
 	public Integer getCount() {
