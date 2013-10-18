@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ImportResource;
  *
  */
 @Configuration
-@ImportResource(value = "classpath*:META-INF/spring/ibl-common-context.xml") 
+@ImportResource(value = "classpath*:META-INF/spring/ibl-common-context.xml")
 public class PropertiesConfiguration {
 
 }
