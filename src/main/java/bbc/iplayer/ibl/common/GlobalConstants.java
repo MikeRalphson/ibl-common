@@ -12,4 +12,8 @@ public interface GlobalConstants {
 
 	public static final String DEFAULT_TRUSTSTORE_TYPE 			= "jks";
 	public static final String DEFAULT_CERTIFICATE_TYPE 		= "pkcs12";
+	
+	public static final String SPRING_BEAN_POOLED_CONNECTION_FACTORY_SUFFIX			= "EhCachePooledJmsConnectionFactory";
+	public static final String SPRING_BEAN_TOPIC_SUFFIX								= "EhCacheTopic";
+	public static final String SPRING_BEAN_DEFAULT_CACHE_REPLICATION_MESSAGE_TTL	= "defaultCacheReplicationMessageTTL";
 }
