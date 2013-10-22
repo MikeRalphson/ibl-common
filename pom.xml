@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>bbc.iplayer.ibl</groupId>
 		<artifactId>ibl</artifactId>
-		<version>0.17.2</version>
+		<version>0.18.0</version>
 	</parent>
 
     <build>
