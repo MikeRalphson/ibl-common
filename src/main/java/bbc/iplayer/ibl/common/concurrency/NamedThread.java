@@ -56,4 +56,8 @@ public class NamedThread extends Thread {
     public static int getThreadsAlive() {
         return alive.get();
     }
+
+    public static void resetCreatedThreadCount() {
+        created.set(0);
+    }
 }

@@ -1,6 +1,7 @@
 package bbc.iplayer.ibl.common.concurrency;
 
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,12 +17,15 @@ public class NamedThreadTest {
     private static final String CUSTOM_NAME = "custom";
     private static final int N_THREADS_CREATE = 20;
     private static final int N_THREADS_KEEP_ALIVE = 1;
-    private static List<Thread> threads;
-    private static CountDownLatch createAndComplete;
-    private static CountDownLatch createAndKeepAlive;
+    private List<Thread> threads;
+    private CountDownLatch createAndComplete;
+    private CountDownLatch createAndKeepAlive;
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void init() {
+
+        NamedThread.resetCreatedThreadCount();
+
         createAndComplete = new CountDownLatch(N_THREADS_CREATE);
         createAndKeepAlive = new CountDownLatch(N_THREADS_KEEP_ALIVE);
 
@@ -78,14 +82,14 @@ public class NamedThreadTest {
 
     }
 
-    static private class CreateAndComplete implements Runnable {
+    private class CreateAndComplete implements Runnable {
         @Override
         public void run() {
             createAndComplete.countDown();
         }
     }
 
-    static private class KeepAlive implements Runnable {
+    private class KeepAlive implements Runnable {
 
         private volatile boolean run = true;
 
@@ -107,5 +111,16 @@ public class NamedThreadTest {
         public void stop() {
             this.run = false;
         }
+    }
+
+    @Test
+    public void resetThreadCount() {
+        new NamedThread(new CreateAndComplete(), CUSTOM_NAME);
+        new NamedThread(new CreateAndComplete(), CUSTOM_NAME);
+        new NamedThread(new CreateAndComplete(), CUSTOM_NAME);
+
+        assertThat(NamedThread.getThreadsCreated(), is(N_THREADS_CREATE + 3));
+        NamedThread.resetCreatedThreadCount();
+        assertThat(NamedThread.getThreadsCreated(), is(0));
     }
 }
