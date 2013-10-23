@@ -12,7 +12,7 @@ public class NamedThread extends Thread {
     private final static AtomicInteger alive = new AtomicInteger();
 
     public NamedThread(Runnable runnable) {
-        super(runnable, DEFAULT_THREAD_NAME);
+        this(runnable, DEFAULT_THREAD_NAME);
     }
 
     public NamedThread(Runnable runnable, String name) {

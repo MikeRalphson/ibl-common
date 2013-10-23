@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class NamedThreadTest {
@@ -46,7 +47,7 @@ public class NamedThreadTest {
     @Test
     public void verifyDefaultThreadName() {
         Thread first = new NamedThread(new CreateAndComplete());
-        assertThat(first.getName(), is("APPLICATION-THREAD"));
+        assertThat(first.getName(), startsWith("APPLICATION-THREAD"));
     }
 
     @Test
