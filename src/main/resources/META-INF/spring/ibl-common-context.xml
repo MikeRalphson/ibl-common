@@ -27,8 +27,8 @@
 		<property name="locations">
 			<list>
 				<value>classpath:config/environment.properties</value>
-				<value>classpath:config/environments/${SERVER_ENV}.properties</value>
-				<value>file:/etc/ibl/java.properties</value>
+				<value>classpath:config/environments/${SERVER_ENV}.properties
+				</value>
 			</list>
 		</property>
 	</bean>

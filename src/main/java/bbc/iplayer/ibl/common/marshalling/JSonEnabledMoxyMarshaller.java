@@ -15,6 +15,7 @@ public class JSonEnabledMoxyMarshaller extends MOXyMarshaller {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(JAXBContextProperties.MEDIA_TYPE, MediaType.APPLICATION_JSON);
         properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
+
         setMarshallerProperties(properties);
         setUnmarshallerProperties(properties);
     }

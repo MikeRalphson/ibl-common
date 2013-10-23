@@ -1,5 +1,0 @@
-line1
-line2  
-(two spaces at the end of previous line)
-line3   
-(three spaces at the end of previous line)
