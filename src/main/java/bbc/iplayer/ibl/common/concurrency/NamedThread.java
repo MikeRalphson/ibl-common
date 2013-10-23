@@ -3,19 +3,24 @@ package bbc.iplayer.ibl.common.concurrency;
 import org.apache.log4j.Logger;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class LoggingThread extends Thread {
+public class NamedThread extends Thread {
 
-    private final static String DEFAULT_THREAD_NAME = "IBL-THREAD";
-    private final static Logger LOG = Logger.getLogger(LoggingThread.class);
+    private final static String DEFAULT_THREAD_NAME = "APPLICATION-THREAD";
+    private final static String NAME_DELIMITER = ":";
+    private final static Logger LOG = Logger.getLogger(NamedThread.class);
     private final static AtomicInteger created = new AtomicInteger();
     private final static AtomicInteger alive = new AtomicInteger();
 
-    public LoggingThread(Runnable runnable) {
+    public NamedThread(Runnable runnable) {
         super(runnable, DEFAULT_THREAD_NAME);
     }
 
-    public LoggingThread(Runnable runnable, String s) {
-        super(runnable, s + ":" + created.incrementAndGet());
+    public NamedThread(Runnable runnable, String name) {
+        super(runnable, new StringBuilder()
+                .append(name).append(NAME_DELIMITER)
+                .append(created.incrementAndGet())
+                .toString());
+
         setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable throwable) {
@@ -28,7 +33,7 @@ public class LoggingThread extends Thread {
     public void run() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Creating thread: " + getName());
+            LOG.debug("Thread started: " + getName());
         }
 
         try {
@@ -39,16 +44,16 @@ public class LoggingThread extends Thread {
             alive.decrementAndGet();
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(getName() + " thread finished");
+                LOG.debug("Thread finished: " + getName());
             }
         }
     }
 
-    public static AtomicInteger getThreadsCreated() {
-        return created;
+    public static int getThreadsCreated() {
+        return created.get();
     }
 
-    public static AtomicInteger getThreadsAlive() {
-        return alive;
+    public static int getThreadsAlive() {
+        return alive.get();
     }
 }
