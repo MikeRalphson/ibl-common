@@ -11,10 +11,6 @@ public class NamedThread extends Thread {
     private final static AtomicInteger created = new AtomicInteger();
     private final static AtomicInteger alive = new AtomicInteger();
 
-    public NamedThread(Runnable runnable) {
-        this(runnable, DEFAULT_THREAD_NAME);
-    }
-
     public NamedThread(Runnable runnable, String name) {
         super(runnable, new StringBuilder()
                 .append(name).append(NAME_DELIMITER)

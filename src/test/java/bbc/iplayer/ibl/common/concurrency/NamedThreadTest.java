@@ -45,12 +45,6 @@ public class NamedThreadTest {
     }
 
     @Test
-    public void verifyDefaultThreadName() {
-        Thread first = new NamedThread(new CreateAndComplete());
-        assertThat(first.getName(), startsWith("APPLICATION-THREAD"));
-    }
-
-    @Test
     public void verifyThreadCreatedCount() {
         assertThat(NamedThread.getThreadsCreated(), is(N_THREADS_CREATE));
     }
@@ -58,7 +52,8 @@ public class NamedThreadTest {
     @Test
     public void verifyThreadsAlive() throws InterruptedException {
         KeepAlive keepAlive = new KeepAlive();
-        Thread alive = new NamedThread(keepAlive);
+        Thread alive = new NamedThread(keepAlive, CUSTOM_NAME);
+
         threads.add(alive);
 
         // start all threads
