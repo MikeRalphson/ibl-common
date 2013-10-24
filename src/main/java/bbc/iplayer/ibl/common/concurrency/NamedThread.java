@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class NamedThread extends Thread {
 
-    private final static String DEFAULT_THREAD_NAME = "APPLICATION-THREAD";
     private final static String NAME_DELIMITER = ":";
     private final static Logger LOG = Logger.getLogger(NamedThread.class);
     private final static AtomicInteger created = new AtomicInteger();

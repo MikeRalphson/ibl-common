@@ -1,10 +1,12 @@
 package bbc.iplayer.ibl.common.concurrency;
 
 import com.google.common.collect.Lists;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +23,7 @@ public class NamedThreadTest {
     private List<Thread> threads;
     private CountDownLatch createAndComplete;
     private CountDownLatch createAndKeepAlive;
+    private CountDownLatch aliveStart;
 
     @Before
     public void init() {
@@ -29,6 +32,7 @@ public class NamedThreadTest {
 
         createAndComplete = new CountDownLatch(N_THREADS_CREATE);
         createAndKeepAlive = new CountDownLatch(N_THREADS_KEEP_ALIVE);
+        aliveStart = new CountDownLatch(N_THREADS_KEEP_ALIVE);
 
         threads =  Lists.newArrayList();
 
@@ -55,14 +59,14 @@ public class NamedThreadTest {
         Thread alive = new NamedThread(keepAlive, CUSTOM_NAME);
 
         threads.add(alive);
-
         // start all threads
         for (Thread thread : threads) {
             thread.start();
         }
 
-        // wait until 20 threads are done
+        // wait until 20 threads are done and keepAlive task has actually started
         createAndComplete.await();
+        aliveStart.await();
 
         // should only have 1 thread running
         assertThat(NamedThread.getThreadsAlive(), is(1));
@@ -92,6 +96,7 @@ public class NamedThreadTest {
         @Override
         public void run() {
             try {
+                aliveStart.countDown();
                 while (run) {
                     TimeUnit.MILLISECONDS.sleep(500);
                 }
@@ -109,14 +114,11 @@ public class NamedThreadTest {
         }
     }
 
+
     @Test
     public void resetThreadCount() {
-        new NamedThread(new CreateAndComplete(), CUSTOM_NAME);
-        new NamedThread(new CreateAndComplete(), CUSTOM_NAME);
-        new NamedThread(new CreateAndComplete(), CUSTOM_NAME);
-
-        assertThat(NamedThread.getThreadsCreated(), is(N_THREADS_CREATE + 3));
         NamedThread.resetCreatedThreadCount();
         assertThat(NamedThread.getThreadsCreated(), is(0));
     }
+
 }
