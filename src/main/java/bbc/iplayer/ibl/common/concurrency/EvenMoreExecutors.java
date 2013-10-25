@@ -8,13 +8,14 @@ public class EvenMoreExecutors {
 
         ThreadFactory threadFactory = new NamedThreadFactory(poolName);
         RejectedExecutionHandler abort = new ThreadPoolExecutor.AbortPolicy();
+        LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<Runnable>();
 
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 threads,
                 threads,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
+                taskQueue,
                 threadFactory,
                 abort
         );
