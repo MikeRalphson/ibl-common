@@ -1,6 +1,7 @@
 package bbc.iplayer.ibl.common.concurrency;
 
 import org.apache.log4j.Logger;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NamedThread extends Thread {

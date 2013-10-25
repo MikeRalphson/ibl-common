@@ -1,6 +1,5 @@
 package bbc.iplayer.ibl.common.concurrency;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
