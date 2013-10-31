@@ -30,7 +30,7 @@ public class NamedThreadTest {
         createAndKeepAlive = new CountDownLatch(N_THREADS_KEEP_ALIVE);
         aliveStart = new CountDownLatch(N_THREADS_KEEP_ALIVE);
 
-        threads =  Lists.newArrayList();
+        threads = Lists.newArrayList();
 
         // create threads
         for (int i = 0; i < N_THREADS_CREATE; i++) {
@@ -99,8 +99,7 @@ public class NamedThreadTest {
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 createAndKeepAlive.countDown();
             }
         }
