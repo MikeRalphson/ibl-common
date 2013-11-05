@@ -55,7 +55,7 @@ extends DefaultKeyValueAttributesTupleImpl {
 			try {
 				result = Integer.valueOf(resultFromAttributes);
 			}
-			catch (Throwable t) {
+			catch (NumberFormatException nfe) {
 				// ignore and default to 0
 			}
 		}
@@ -78,7 +78,7 @@ extends DefaultKeyValueAttributesTupleImpl {
 			try {
 				result = Long.valueOf(resultFromAttributes);
 			}
-			catch (Throwable t) {
+			catch (NumberFormatException nfe) {
 				// ignore and default to 0L
 			}
 		}
