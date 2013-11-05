@@ -43,7 +43,7 @@ extends HashMap<String, T>{
 		return totalCount;
 	}
 
-	public void setTotalCount(Integer totalCount) {
+	public final void setTotalCount(Integer totalCount) {
 		this.totalCount = totalCount;
 	}
 }

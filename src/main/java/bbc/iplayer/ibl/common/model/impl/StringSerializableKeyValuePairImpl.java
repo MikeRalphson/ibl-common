@@ -48,7 +48,8 @@ implements KeyValuePair<String, V> {
 	 */
 	public StringSerializableKeyValuePairImpl() {
 		super();
-		clear();
+		setKey("");
+		setValue(null);
 	}
 
 	/**
@@ -79,7 +80,7 @@ implements KeyValuePair<String, V> {
 	/**
 	 * @post: this.key != null: true
 	 */
-	public void setKey(String key) {
+	public final void setKey(String key) {
 		if (key == null) {
 			this.key = "";
 		}
@@ -97,7 +98,7 @@ implements KeyValuePair<String, V> {
 	/**
 	 * @post: this.value != null: true
 	 */
-	public void setValue(V value) {
+	public final void setValue(V value) {
 		this.value = value;
 	}
 
@@ -112,7 +113,7 @@ implements KeyValuePair<String, V> {
 	}
 
 	@Override
-	public void clear() {
+	public final void clear() {
 		setKey("");
 		setValue(null);
 	}

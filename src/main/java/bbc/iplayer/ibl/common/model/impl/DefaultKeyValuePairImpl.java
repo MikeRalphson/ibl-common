@@ -46,7 +46,8 @@ implements KeyValuePair<String, String> {
 	 */
 	public DefaultKeyValuePairImpl() {
 		super();
-		clear();
+		setKey("");
+		setValue("");
 	}
 
 	/**
@@ -78,7 +79,7 @@ implements KeyValuePair<String, String> {
 	/**
 	 * @post: this.key != null: true
 	 */
-	public void setKey(String key) {
+	public final void setKey(String key) {
 		if (key == null) {
 			this.key = "";
 		}
@@ -96,7 +97,7 @@ implements KeyValuePair<String, String> {
 	/**
 	 * @post: this.value != null: true
 	 */
-	public void setValue(String value) {
+	public final void setValue(String value) {
 		if (value == null) {
 			this.value = "";
 		}

@@ -53,7 +53,6 @@ implements KeyValueAttributesTuple<String, String> {
 	 */
 	public DefaultKeyValueAttributesTupleImpl() {
 		super();
-		clear();
 		setAttributes(null);
 	}
 
@@ -86,7 +85,7 @@ implements KeyValueAttributesTuple<String, String> {
 	}
 
 	@Override
-	public void setAttributes(KeyValuePairMap<String, String> attributes) {
+	public final void setAttributes(KeyValuePairMap<String, String> attributes) {
 		if (attributes == null) {
 			this.attributes = new DefaultKeyValuePairMapImpl();
 		}

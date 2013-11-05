@@ -51,7 +51,6 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	 */
 	public DefaultKeyValueTypeTupleImpl() {
 		super();
-		clear();
 		setType(null);
 	}
 
@@ -83,7 +82,7 @@ implements KeyValueTypeTuple<String, String, Class<? extends Serializable>> {
 	}
 
 	@Override
-	public void setType(Class<? extends Serializable> type) {
+	public final void setType(Class<? extends Serializable> type) {
 		if (type == null) {
 			this.type = Serializable.class;
 		}

@@ -55,14 +55,14 @@ extends DefaultKeyValueAttributesTupleImpl {
 			try {
 				result = Integer.valueOf(resultFromAttributes);
 			}
-			catch (Throwable t) {
+			catch (NumberFormatException nfe) {
 				// ignore and default to 0
 			}
 		}
 		return result;
 	}
 
-	public void setVersion(Integer version) {
+	public final void setVersion(Integer version) {
 		if (version == null) {
 			getAttributes().put(ATTRIBUTE_KEY_VERSION, new Integer(1).toString());
 		}
@@ -78,14 +78,14 @@ extends DefaultKeyValueAttributesTupleImpl {
 			try {
 				result = Long.valueOf(resultFromAttributes);
 			}
-			catch (Throwable t) {
+			catch (NumberFormatException nfe) {
 				// ignore and default to 0L
 			}
 		}
 		return result;
 	}
 
-	public void setLastUpdatedInMs(Long lastUpdatedInMs) {
+	public final void setLastUpdatedInMs(Long lastUpdatedInMs) {
 		if (lastUpdatedInMs == null) {
 			getAttributes().put(ATTRIBUTE_KEY_LAST_UPDATED_IN_MS, new Long(0).toString());
 		}

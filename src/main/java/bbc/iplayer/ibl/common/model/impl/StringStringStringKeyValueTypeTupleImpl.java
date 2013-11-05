@@ -49,7 +49,6 @@ implements KeyValueTypeTuple<String, String, String> {
 	 */
 	public StringStringStringKeyValueTypeTupleImpl() {
 		super();
-		clear();
 		setType(null);
 	}
 
@@ -81,7 +80,7 @@ implements KeyValueTypeTuple<String, String, String> {
 	}
 
 	@Override
-	public void setType(String type) {
+	public final void setType(String type) {
 		if (type == null) {
 			this.type = "";
 		}
