@@ -13,57 +13,47 @@ package bbc.iplayer.ibl.common.utils;
  */
 public final class StringToTypedValueHelper {
 	
-	public final static <E extends Enum<E>> Object getAsEnumType(String valueAsString, Class<E> type)	{
+	public final static <E extends Enum<E>> Object getAsEnumType(String valueAsString, Class<E> type) throws Exception {
 		Object result = null;
 
 		if ((valueAsString != null) && (!valueAsString.isEmpty()) && (type != null)) {
-			try	{
-				result = Enum.valueOf(type, valueAsString);
-			}
-			catch (Exception e)	{
-				// happily ignore and return null later on
-			}
+			result = Enum.valueOf(type, valueAsString);
 		}
 
 		return result;
 	}
 	
-	public final static Object getAsType(String valueAsString, Class<?> type)	{
+	public final static Object getAsType(String valueAsString, Class<?> type) throws Exception {
 		Object result = null;
 
 		if ((valueAsString != null) && (!valueAsString.isEmpty()) && (type != null))	{
-			try	{
-				if (type.equals(boolean.class) || type.equals(Boolean.class)) {
-					if (valueAsString.equalsIgnoreCase("yes") ||
-						valueAsString.equalsIgnoreCase("y") ||
-						valueAsString.equalsIgnoreCase("true")) {
-						result = Boolean.TRUE;
-					}
-					else {
-						result = Boolean.FALSE;
-					}
-				}				
-				else if (type.equals(int.class) || type.equals(Integer.class)) {
-					result = Integer.valueOf(valueAsString);
+			if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+				if (valueAsString.equalsIgnoreCase("yes") ||
+					valueAsString.equalsIgnoreCase("y") ||
+					valueAsString.equalsIgnoreCase("true")) {
+					result = Boolean.TRUE;
 				}
-				else if (type.equals(short.class) || type.equals(Short.class)) {
-					result = Short.valueOf(valueAsString);
-				}				
-				else if (type.equals(long.class) || type.equals(Long.class)) {
-					result = Long.valueOf(valueAsString);
+				else {
+					result = Boolean.FALSE;
 				}
-				else if (type.equals(float.class) || type.equals(Float.class)) {
-					result = Float.valueOf(valueAsString);
-				}
-				else if (type.equals(double.class) || type.equals(Double.class)) {
-					result = Double.valueOf(valueAsString);
-				}
-				else if (type.equals(String.class))	{
-					result = valueAsString;
-				}
+			}				
+			else if (type.equals(int.class) || type.equals(Integer.class)) {
+				result = Integer.valueOf(valueAsString);
 			}
-			catch (NumberFormatException nfe) {
-				// happily ignore and return null later on
+			else if (type.equals(short.class) || type.equals(Short.class)) {
+				result = Short.valueOf(valueAsString);
+			}				
+			else if (type.equals(long.class) || type.equals(Long.class)) {
+				result = Long.valueOf(valueAsString);
+			}
+			else if (type.equals(float.class) || type.equals(Float.class)) {
+				result = Float.valueOf(valueAsString);
+			}
+			else if (type.equals(double.class) || type.equals(Double.class)) {
+				result = Double.valueOf(valueAsString);
+			}
+			else if (type.equals(String.class))	{
+				result = valueAsString;
 			}
 		}
 		
