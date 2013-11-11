@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration(classes = {CommonTestConfiguration.class})
 public class ConfigurationTest {
 
-	@Value("${bbc.iplayer.ibl.common.http-max-num-connections}")
+	@Value("${bbc.iplayer.ibl.common.http-max-connections-per-host}")
 	private String aProperty;
 	
 	@Test
