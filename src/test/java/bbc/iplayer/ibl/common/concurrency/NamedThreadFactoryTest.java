@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class NamedThreadFactoryTest {
@@ -22,7 +21,7 @@ public class NamedThreadFactoryTest {
             }
         });
 
-        assertThat(thread.getName(), startsWith(poolName));
+        assertThat(thread.getName(), is(poolName + ":" + 1));
         assertThat(thread, instanceOf(NamedThread.class));
     }
 }
