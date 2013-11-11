@@ -6,14 +6,14 @@ public class EvenMoreExecutors {
 
     private static final long DEFAULT_KEEP_ALIVE = 60L;
 
-    public static ExecutorService namedFixedExecutorService(int threads, String poolName) {
+    public static ExecutorService namedFixedExecutorService(int nThreads, String poolName) {
 
         ThreadFactory threadFactory = new NamedThreadFactory(poolName);
         RejectedExecutionHandler abort = new ThreadPoolExecutor.AbortPolicy();
 
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-                threads,
-                threads,
+                nThreads,
+                nThreads,
                 0L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(),
@@ -27,7 +27,7 @@ public class EvenMoreExecutors {
     public static ExecutorService namedCachedExecutorService(String poolName) {
 
         ThreadFactory threadFactory = new NamedThreadFactory(poolName);
-        RejectedExecutionHandler abort = new ThreadPoolExecutor.AbortPolicy();
+        RejectedExecutionHandler abortPolicy = new ThreadPoolExecutor.AbortPolicy();
 
         int corePoolSize = 0;
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
@@ -37,7 +37,7 @@ public class EvenMoreExecutors {
                 TimeUnit.MILLISECONDS,
                 new SynchronousQueue<Runnable>(),
                 threadFactory,
-                abort
+                abortPolicy
         );
 
         return threadPoolExecutor;
@@ -52,7 +52,7 @@ public class EvenMoreExecutors {
 
         ThreadFactory threadFactory = new NamedThreadFactory(poolName);
         LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
-        RejectedExecutionHandler abort = new ThreadPoolExecutor.AbortPolicy();
+        RejectedExecutionHandler abortPolicy = new ThreadPoolExecutor.AbortPolicy();
 
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 maxThreadBound,
@@ -61,7 +61,7 @@ public class EvenMoreExecutors {
                 TimeUnit.SECONDS,
                 queue,
                 threadFactory,
-                abort
+                abortPolicy
         );
 
         threadPoolExecutor.allowCoreThreadTimeOut(true);
