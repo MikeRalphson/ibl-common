@@ -1,4 +1,4 @@
 java-lib
 ========
 
-Here's a library of functionalities that are shared by a bunch of java projects we have. 
+Common functionalities that are shared by our java projects.
