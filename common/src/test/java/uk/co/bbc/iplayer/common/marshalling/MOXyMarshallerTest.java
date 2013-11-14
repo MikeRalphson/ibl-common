@@ -29,18 +29,18 @@ public class MOXyMarshallerTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private static TestIBL iblResponse;
+    private static SampleIBL iblResponse;
     private static Map<String, Object> properties = new HashMap<String, Object>();
     private static StreamSource recEngSource;
-    private final static Class TEST_IBL_ROOT = TestIBL.class;
+    private final static Class TEST_IBL_ROOT = SampleIBL.class;
     private final static Class TEST_REC_ENG_ROOT = SampleRootElementJson.class;
-    private final static Class TEST_NITRO_ROOT = TestNitro.class;
+    private final static Class TEST_NITRO_ROOT = SampleNitro.class;
     private static final int DEFAULT_SAMPLE_ELEMENT_SIZE = 20;
 
     @BeforeClass
     public static void init() throws URISyntaxException, IOException {
 
-        iblResponse = new TestIBL();
+        iblResponse = new SampleIBL();
         iblResponse.setVersion("1.0");
         iblResponse.setSchema(new URI("http://bbc.co.uk"));
 
@@ -53,13 +53,13 @@ public class MOXyMarshallerTest {
 
     @Test
     public void writeThenReadIBLResponseInXmlformat() throws IOException {
-        TestIBL actual = writeAndReadSameResponse(TestIBL.class, iblResponse);
+        SampleIBL actual = writeAndReadSameResponse(SampleIBL.class, iblResponse);
         assertIBLResponse(actual);
     }
 
     @Test
     public void writeThenReadIBLResponseInJsonformat() throws IOException {
-        TestIBL actual = writeAndReadSameResponse(TestIBL.class, iblResponse, properties);
+        SampleIBL actual = writeAndReadSameResponse(SampleIBL.class, iblResponse, properties);
         assertIBLResponse(actual);
     }
 
@@ -68,7 +68,7 @@ public class MOXyMarshallerTest {
         Unmarshaller unmarshaller = new MOXyMarshaller(TEST_NITRO_ROOT);
         StreamSource content = Fixtures.createStreamSource("marshalling-counts.xml");
         final Object unmarshal = unmarshaller.unmarshal(content);
-        TestNitro nitro = (TestNitro) unmarshal;
+        SampleNitro nitro = (SampleNitro) unmarshal;
 
         assertThat(nitro, notNullValue());
     }
@@ -131,7 +131,7 @@ public class MOXyMarshallerTest {
         return writeAndReadSameResponse(type, response, null);
     }
 
-    private void assertIBLResponse(TestIBL actual) {
+    private void assertIBLResponse(SampleIBL actual) {
         String actualVersion = actual.getVersion();
         String actualSchema = actual.getSchema().toString();
 

@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.*;
         "feedContent"
 })
 @XmlRootElement(name = "nitro")
-public class TestNitro {
+public class SampleNitro {
 
 
     @XmlElements({

@@ -13,7 +13,7 @@ import java.net.URI;
         "version"
 })
 @XmlRootElement(name = "ibl")
-public class TestIBL {
+public class SampleIBL {
 
     @XmlAttribute(required = true)
     private String version = "0.1";
@@ -23,7 +23,7 @@ public class TestIBL {
     @XmlJavaTypeAdapter(IBLDateTimeAdapter.class)
     private DateTime timestamp;
 
-    public TestIBL() {
+    public SampleIBL() {
         timestamp = new DateTime(DateTimeZone.UTC);
     }
 
