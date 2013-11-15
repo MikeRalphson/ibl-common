@@ -1,6 +1,5 @@
 package uk.co.bbc.iplayer.common.marshalling;
 
-import bbc.iplayer.ibl.common.utils.fixtures.Fixtures;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.oxm.MediaType;
 import org.junit.BeforeClass;
@@ -10,6 +9,7 @@ import org.junit.rules.ExpectedException;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.UnmarshallingFailureException;
 import uk.co.bbc.iplayer.common.utils.IOConversions;
+import uk.co.bbc.iplayer.common.utils.fixtures.Fixtures;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
