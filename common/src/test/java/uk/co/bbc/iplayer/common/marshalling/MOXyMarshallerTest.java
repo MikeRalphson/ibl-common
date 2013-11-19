@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.UnmarshallingFailureException;
+import uk.co.bbc.iplayer.common.file.FileData;
 import uk.co.bbc.iplayer.common.utils.IOConversions;
-import uk.co.bbc.iplayer.common.utils.fixtures.Fixtures;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -26,6 +26,7 @@ import static org.junit.Assert.assertThat;
 
 public class MOXyMarshallerTest {
 
+    public static final String FIXTURES = "fixtures/";
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -48,7 +49,7 @@ public class MOXyMarshallerTest {
         properties.put(JAXBContextProperties.MEDIA_TYPE, MediaType.APPLICATION_JSON);
         properties.put(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
 
-        recEngSource = Fixtures.createStreamSource("sampleelements.json");
+        recEngSource = FileData.createStreamSource(FIXTURES + "sampleelements.json");
     }
 
     @Test
@@ -66,7 +67,7 @@ public class MOXyMarshallerTest {
     @Test
     public void unmarshallNitroResponse() throws IOException {
         Unmarshaller unmarshaller = new MOXyMarshaller(TEST_NITRO_ROOT);
-        StreamSource content = Fixtures.createStreamSource("marshalling-counts.xml");
+        StreamSource content = FileData.createStreamSource(FIXTURES + "marshalling-counts.xml");
         final Object unmarshal = unmarshaller.unmarshal(content);
         SampleNitro nitro = (SampleNitro) unmarshal;
 
