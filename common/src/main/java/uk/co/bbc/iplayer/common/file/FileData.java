@@ -51,7 +51,7 @@ public class FileData {
 
         ClassPathResource resource = new ClassPathResource(file);
         if (!resource.exists()) {
-            throw new IOException("Can't find fixture " + file);
+            throw new IOException("Can't find file " + file);
         }
 
         StreamSource source = new StreamSource();
