@@ -2,6 +2,8 @@ package uk.co.bbc.iplayer.common.collections;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collection;
@@ -24,6 +26,11 @@ public class MultiTypedHashMap implements MultiTypedMap {
         for (T value : values) {
             put(token, value);
         }
+    }
+
+    @Override
+    public boolean containsKey(Class<?> key) {
+        return map.containsKey(key);
     }
 
     public <T> void put(Class<T> token, T value) {
@@ -75,19 +82,12 @@ public class MultiTypedHashMap implements MultiTypedMap {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MultiTypedHashMap that = (MultiTypedHashMap) o;
-
-        if (map != null ? !map.equals(that.map) : that.map != null) return false;
-
-        return true;
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return map != null ? map.hashCode() : 0;
+        return HashCodeBuilder.reflectionHashCode(map);
     }
 
 
