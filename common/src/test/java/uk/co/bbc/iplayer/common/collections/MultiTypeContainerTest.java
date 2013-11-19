@@ -79,13 +79,26 @@ public class MultiTypeContainerTest {
     }
 
     @Test
-    public void isEmtyTrueWhenNotPopulated() {
+    public void isEmptyTrueWhenNotPopulated() {
         MultiTypedMap map = new MultiTypedHashMap();
         assertThat(map.isEmpty(), is(true));
     }
 
     @Test
-    public void multiMapsAreNotTheSameHaveDifferntHashcode() {
+    public void checkForKeyThatExists() {
+        MultiTypedMap map = new MultiTypedHashMap();
+        map.put(String.class, "someString");
+        assertThat(map.containsKey(String.class), is(true));
+    }
+
+    @Test
+    public void checkForKeyThatDoesNotExist() {
+        MultiTypedMap map = new MultiTypedHashMap();
+        assertThat(map.containsKey(String.class), is(false));
+    }
+
+    @Test
+    public void multiMapsAreNotTheSameHaveDifferentHashcode() {
         MultiTypedMap map1 = populateMapWith(Integer.class, DEFAULT_INT, 10);
         MultiTypedMap map2 = populateMapWith(Integer.class, DEFAULT_INT, 11);
 
