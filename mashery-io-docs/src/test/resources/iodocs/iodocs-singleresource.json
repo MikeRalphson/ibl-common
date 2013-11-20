@@ -1,0 +1,13 @@
+{
+    "resources": {
+        "A to Z": {
+            "methods": {
+                "Find": {
+                    "httpMethod": "GET",
+                    "path": "aPath",
+                    "description": "Desc"
+                }
+            }
+        }
+    }
+}
