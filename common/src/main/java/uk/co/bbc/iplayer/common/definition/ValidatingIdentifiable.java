@@ -7,13 +7,11 @@ import java.util.regex.Pattern;
 
 public abstract class ValidatingIdentifiable extends DataId {
 
-
     public ValidatingIdentifiable(String pid) {
         super(pid);
         if (pid == null || !getValidationPattern().matcher(pid).matches()) {
             throw new IllegalArgumentException("Argument does not match " + getValidationPattern().pattern());
         }
-
     }
 
     protected abstract Pattern getValidationPattern();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class Pid extends ValidatingIdentifiable {
+public class Pid extends ValidatingIdentifiable implements Identifiable {
     private static Pattern pattern = Pattern.compile("^[b-df-hj-np-tv-z0-9]{8,}$");
 
     public Pid(String pid) {
