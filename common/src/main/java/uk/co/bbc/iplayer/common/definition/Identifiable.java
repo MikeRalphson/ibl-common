@@ -1,5 +1,7 @@
 package uk.co.bbc.iplayer.common.definition;
 
-public interface Identifiable {
+import java.io.Serializable;
+
+public interface Identifiable extends Serializable {
     String getId();
 }
