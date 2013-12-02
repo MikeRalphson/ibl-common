@@ -1,10 +1,14 @@
 package uk.co.bbc.iplayer.common.definition;
 
 import com.google.common.collect.Lists;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
+import java.io.Serializable;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -57,5 +61,10 @@ public class PidTest {
         }
 
         assertThat(strings, is(Pid.fromPids(pids)));
+    }
+
+    @Test
+    public void implementsSerializableForCaching() {
+        MatcherAssert.assertThat(DataId.create("id"), instanceOf(Serializable.class));
     }
 }
