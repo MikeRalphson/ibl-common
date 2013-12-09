@@ -73,6 +73,9 @@ public final class StringToTypedValueHelper {
 			else if (type.equals(double.class) || type.equals(Double.class)) {
 				result = Double.valueOf(valueAsString);
 			}
+			else if (type.equals(Class.class)) {
+				result = Class.forName(valueAsString);
+			}
 			else if (type.equals(String.class))	{
 				result = valueAsString;
 			}

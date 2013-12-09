@@ -151,6 +151,21 @@ public class StringToTypedValueHelperTest {
 	}
 
 	@Test
+	public void givenClassStringValue_testGetAsType() throws Exception {
+		String classStringValue = "java.lang.Integer";
+		Class<?> classValueObject = (Class<?>) StringToTypedValueHelper.getAsType(classStringValue, Class.class);
+		assertEquals(Integer.class, classValueObject);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void givenClassCollectionStringValue_testGetAsTypeCollection() throws Exception {
+		String classStringValueCollection = "java.lang.Integer,java.lang.Boolean";
+		List<Class<?>> classValueObjectCollection = (List<Class<?>>) StringToTypedValueHelper.getAsTypeCollection(classStringValueCollection, Class.class);
+		assertEquals(Arrays.asList(Integer.class, Boolean.class), classValueObjectCollection);
+	}
+	
+	@Test
 	public void givenString_testGetAsType() throws Exception {
 		String aStringValue = "test";
 		String aStringValueObject = (String) StringToTypedValueHelper.getAsType(aStringValue, String.class);
