@@ -76,6 +76,9 @@ public final class StringToTypedValueHelper {
 			else if (type.equals(String.class))	{
 				result = valueAsString;
 			}
+			else {
+				result = valueAsString;
+			}
 		}
 		
 		return result;
