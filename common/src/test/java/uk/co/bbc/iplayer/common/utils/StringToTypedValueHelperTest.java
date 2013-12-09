@@ -152,17 +152,17 @@ public class StringToTypedValueHelperTest {
 
 	@Test
 	public void givenClassStringValue_testGetAsType() throws Exception {
-		String classStringValue = "java.lang.Integer";
-		Class<?> classValueObject = (Class<?>) StringToTypedValueHelper.getAsType(classStringValue, Class.class);
-		assertEquals(Integer.class, classValueObject);
+		String classStringValue = "java.util.Map";
+		String classValueObject = (String) StringToTypedValueHelper.getAsType(classStringValue, Class.class);
+		assertEquals(classStringValue, classValueObject);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void givenClassCollectionStringValue_testGetAsTypeCollection() throws Exception {
 		String classStringValueCollection = "java.lang.Integer,java.lang.Boolean";
-		List<Class<?>> classValueObjectCollection = (List<Class<?>>) StringToTypedValueHelper.getAsTypeCollection(classStringValueCollection, Class.class);
-		assertEquals(Arrays.asList(Integer.class, Boolean.class), classValueObjectCollection);
+		List<String> classValueObjectCollection = (List<String>) StringToTypedValueHelper.getAsTypeCollection(classStringValueCollection, Class.class);
+		assertEquals(Arrays.asList("java.lang.Integer", "java.lang.Boolean"), classValueObjectCollection);
 	}
 	
 	@Test
