@@ -5,9 +5,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ResultsList<T> {
+public class ResultsList<T extends Serializable> implements Serializable {
 
     private static int DEFAULT_PAGE = 1;
 
@@ -43,7 +44,7 @@ public class ResultsList<T> {
      * @param <T> Type of item
      * @return ResultsList containing
      */
-    public static <T> ResultsList<T> create(List<T> list, Long total, Integer page, Integer pageSize) {
+    public static <T extends Serializable> ResultsList<T> create(List<T> list, Long total, Integer page, Integer pageSize) {
         return new ResultsList<T>(list, total, page, pageSize);
     }
 
@@ -54,7 +55,7 @@ public class ResultsList<T> {
         this.pageSize = list.size();
     }
 
-    public static <T> ResultsList<T> create(List<T> list) {
+    public static <T extends Serializable> ResultsList<T> create(List<T> list) {
         return new ResultsList<T>(list);
     }
 
@@ -65,7 +66,7 @@ public class ResultsList<T> {
         this.pageSize = items.length;
     }
 
-    public static <T> ResultsList<T> create(T... items) {
+    public static <T extends Serializable> ResultsList<T> create(T... items) {
         return new ResultsList<T>(items);
     }
 
