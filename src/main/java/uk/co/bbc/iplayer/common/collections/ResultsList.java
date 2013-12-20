@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.io.Serializable;
 import java.util.List;
 
-public class ResultsList<T extends Serializable> implements Serializable {
+public class ResultsList<T> implements Serializable {
 
     private static int DEFAULT_PAGE = 1;
 
@@ -44,7 +44,7 @@ public class ResultsList<T extends Serializable> implements Serializable {
      * @param <T> Type of item
      * @return ResultsList containing
      */
-    public static <T extends Serializable> ResultsList<T> create(List<T> list, Long total, Integer page, Integer pageSize) {
+    public static <T> ResultsList<T> create(List<T> list, Long total, Integer page, Integer pageSize) {
         return new ResultsList<T>(list, total, page, pageSize);
     }
 
@@ -55,7 +55,7 @@ public class ResultsList<T extends Serializable> implements Serializable {
         this.pageSize = list.size();
     }
 
-    public static <T extends Serializable> ResultsList<T> create(List<T> list) {
+    public static <T> ResultsList<T> create(List<T> list) {
         return new ResultsList<T>(list);
     }
 
@@ -66,7 +66,7 @@ public class ResultsList<T extends Serializable> implements Serializable {
         this.pageSize = items.length;
     }
 
-    public static <T extends Serializable> ResultsList<T> create(T... items) {
+    public static <T> ResultsList<T> create(T... items) {
         return new ResultsList<T>(items);
     }
 

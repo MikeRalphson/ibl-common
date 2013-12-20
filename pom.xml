@@ -6,7 +6,7 @@
 
     <groupId>bbc.iplayer</groupId>
     <artifactId>common</artifactId>
-    <version>1.32</version>
+    <version>1.33</version>
 
     <parent>
         <groupId>bbc.forge.maven.parents</groupId>

@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @param <V> the type of Value
  */
-public class IdentifiableValuePair<V extends Serializable> implements Serializable {
+public class IdentifiableValuePair<V> implements Serializable {
     private final Identifiable id;
     private final V value;
 
@@ -21,7 +21,7 @@ public class IdentifiableValuePair<V extends Serializable> implements Serializab
      * @param value Value that the id is associated with
      * @return An representation of the relationship between the id and a value
      */
-    public static <V extends Serializable> IdentifiableValuePair<V> of(final Identifiable id, final V value) {
+    public static <V> IdentifiableValuePair<V> of(final Identifiable id, final V value) {
         return new IdentifiableValuePair<V>(id, value);
     }
 
