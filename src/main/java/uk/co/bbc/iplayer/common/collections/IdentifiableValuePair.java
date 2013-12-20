@@ -2,13 +2,15 @@ package uk.co.bbc.iplayer.common.collections;
 
 import uk.co.bbc.iplayer.common.definition.Identifiable;
 
+import java.io.Serializable;
+
 /**
  * Simple mechanism for representing a simple relationship between an
  * identifiable (such as a Pid) and any other object.
  *
  * @param <V> the type of Value
  */
-public class IdentifiableValuePair<V> {
+public class IdentifiableValuePair<V> implements Serializable {
     private final Identifiable id;
     private final V value;
 

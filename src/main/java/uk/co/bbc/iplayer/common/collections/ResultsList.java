@@ -5,9 +5,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ResultsList<T> {
+public class ResultsList<T> implements Serializable {
 
     private static int DEFAULT_PAGE = 1;
 
