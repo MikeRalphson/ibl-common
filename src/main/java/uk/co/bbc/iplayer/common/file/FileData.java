@@ -29,6 +29,10 @@ public class FileData {
         }
     }
 
+    public static boolean fileExistsFromClassPath(String path) {
+        return new ClassPathResource(path).exists();
+    }
+
     public static <T> T getDataFromFileClassPath(Class<T> clazz, String path) throws UnmarshallerCreationException {
         return getDataFromFile(clazz, getFileFromClassPath(path));
     }
