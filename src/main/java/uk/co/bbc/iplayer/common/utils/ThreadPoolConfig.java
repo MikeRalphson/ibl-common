@@ -3,7 +3,6 @@ package uk.co.bbc.iplayer.common.utils;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -35,6 +34,7 @@ public class ThreadPoolConfig {
         private final int larestSize;
         private final int maxSize;
         private final long taskCount;
+        private final int workQueueSize;
 
         public PoolConfig(ThreadPoolExecutor executor) {
             this.corePoolSize = executor.getCorePoolSize();
@@ -43,7 +43,8 @@ public class ThreadPoolConfig {
             this.completedTaskCount = executor.getCompletedTaskCount();
             this.larestSize = executor.getLargestPoolSize();
             this.maxSize = executor.getMaximumPoolSize();
-            taskCount = executor.getTaskCount();
+            this.taskCount = executor.getTaskCount();
+            this.workQueueSize = executor.getQueue().size();
         }
 
         public int getCorePoolSize() {
@@ -70,17 +71,26 @@ public class ThreadPoolConfig {
             return maxSize;
         }
 
+        public int getWorkQueueSize() {
+            return workQueueSize;
+        }
+
+        public long getTaskCount() {
+            return taskCount;
+        }
+
         @Override
         public String toString() {
-            return "PoolConfig { " +
-                    "corePoolSize = " + corePoolSize +
-                    ", poolSize = " + poolSize +
-                    ", activeCount = " + activeCount +
-                    ", scheduledTaskCount = " + taskCount +
-                    ", completedTaskCount = " + completedTaskCount +
-                    ", largestSize = " + larestSize +
-                    ", maxSize = " + maxSize +
-                    " }";
+            return "PoolConfig{" +
+                    "corePoolSize=" + corePoolSize +
+                    ", poolSize=" + poolSize +
+                    ", activeCount=" + activeCount +
+                    ", completedTaskCount=" + completedTaskCount +
+                    ", larestSize=" + larestSize +
+                    ", maxSize=" + maxSize +
+                    ", taskCount=" + taskCount +
+                    ", workQueueSize=" + workQueueSize +
+                    '}';
         }
     }
 }
