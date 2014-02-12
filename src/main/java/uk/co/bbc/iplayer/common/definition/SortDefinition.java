@@ -5,7 +5,7 @@ public class SortDefinition {
     private String sortBy;
     private SortDirection sortDirection = SortDirection.ASCENDING;
 
-    static enum SortDirection {
+    public static enum SortDirection {
         ASCENDING,
         DESCENDING;
 
