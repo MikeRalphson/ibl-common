@@ -3,6 +3,7 @@ package uk.co.bbc.iplayer.common.schema.adapters;
 import org.joda.time.Period;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -27,6 +28,12 @@ public class PeriodAdapterTest {
     public void testIgnoresMilliSecondsWhenMarshalling() throws Exception {
         Period period = new Period(10543);
         assertThat(periodAdapter.marshal(period), is("PT10S"));
+    }
+
+    @Test
+    public void testNullPeriod(){
+        assertNull(periodAdapter.marshal(null));
+        assertNull(periodAdapter.unmarshal(null));
     }
 
 }
