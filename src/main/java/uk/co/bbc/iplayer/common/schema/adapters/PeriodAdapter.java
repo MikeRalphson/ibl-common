@@ -1,5 +1,6 @@
 package uk.co.bbc.iplayer.common.schema.adapters;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DurationFieldType;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -13,14 +14,20 @@ public class PeriodAdapter extends XmlAdapter<String, Period> {
     private PeriodFormatter periodFormatter = ISOPeriodFormat.standard();
 
     @Override
-    public Period unmarshal(String s) {
-        return periodFormatter.parsePeriod(s);
+    public Period unmarshal(String period) {
+        if (!StringUtils.isBlank(period)) {
+            return periodFormatter.parsePeriod(period);
+        }
+        return null;
     }
 
     @Override
     public String marshal(Period period) {
-        Period iblPeriod = period.normalizedStandard(PeriodType.forFields(iblDurationFields()));
-        return periodFormatter.print(iblPeriod);
+        if (null != period) {
+            Period iblPeriod = period.normalizedStandard(PeriodType.forFields(iblDurationFields()));
+            return periodFormatter.print(iblPeriod);
+        }
+        return null;
     }
 
     public static Period unmarshall(String period) {
