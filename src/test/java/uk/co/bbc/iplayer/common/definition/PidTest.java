@@ -2,7 +2,9 @@ package uk.co.bbc.iplayer.common.definition;
 
 import com.google.common.collect.Lists;
 import org.hamcrest.MatcherAssert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +15,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class PidTest {
+
+    // 21 char string
+    public static final String PID_EXCEEDING_MAX_LENGTH = "123456789bcdfghjklmnp";
+    public static final String PID_AT_MAX_LENGTH = "123456789bcdfghjklmn";
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private static void valid(String pid) {
         assertThat(pid, is(new Pid(pid).getId()));
@@ -29,10 +38,26 @@ public class PidTest {
     }
 
     @Test
-    public void pidCanBeMoreThan8Chars() {
-        valid("123456789bcdfghjklmnpqrstvwxyz123456789bcdfghjklmnpqrstvwxyz");
+    public void pidMustNotExceedMaxLengthOf20Chars() {
+        expectedException.expect(IllegalArgumentException.class);
+        valid(PID_EXCEEDING_MAX_LENGTH);
     }
 
+    @Test
+    public void pidMatchesOnMaxBoundary() {
+        valid(PID_AT_MAX_LENGTH);
+    }
+
+    @Test
+    public void rejectIllegalChars() {
+        expectedException.expect(IllegalArgumentException.class);
+        valid("&#x9090-11_+-*dd(n)d");
+    }
+
+    @Test
+    public void pidMatchOnDashAndUnderscores() {
+        valid("b0144p0z-asd4f_AaZz_");
+    }
     @Test
     public void pidCanBeJustLetters() {
         valid("bnmcbnmc");
@@ -42,12 +67,7 @@ public class PidTest {
         valid("12345678");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void pidCantBe7OrLessChars() {
-        new Pid("1234567");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void pidCantHaveVowels() {
         new Pid("1234567a");
     }
