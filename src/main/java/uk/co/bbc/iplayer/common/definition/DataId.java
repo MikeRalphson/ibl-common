@@ -1,7 +1,6 @@
 package uk.co.bbc.iplayer.common.definition;
 
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class DataId implements Identifiable {
 
@@ -18,23 +17,31 @@ public class DataId implements Identifiable {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        return org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals(this, o);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataId dataId = (DataId) o;
+
+        if (!id.equals(dataId.id)) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return id.hashCode();
     }
 
-    public static Identifiable create(String id) {
-        return new DataId(id);
-    }
 
     @Override
     public String toString() {
         return "DataId{" +
                 "id='" + id + '\'' +
                 '}';
+    }
+
+    public static Identifiable create(String id) {
+        return new DataId(id);
     }
 }
