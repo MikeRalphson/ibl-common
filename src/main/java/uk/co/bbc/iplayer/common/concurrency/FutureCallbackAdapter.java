@@ -26,12 +26,12 @@ public class FutureCallbackAdapter<T> implements FutureCallback<T> {
     public void onFailure(Throwable throwable) {
         final StringBuilder sb = new StringBuilder(FAILED_TO_GET).append(info);
 
-        if (LOG.isErrorEnabled()) {
+        if (LOG.isWarnEnabled()) {
+            LOG.warn(sb.toString(), throwable);
+        }
+        else if (LOG.isErrorEnabled()) {
             appendCauseMessage(sb, throwable, 0);
             LOG.error(sb.toString());
-        }
-        else {
-            LOG.warn(sb.toString(), throwable);
         }
     }
 
