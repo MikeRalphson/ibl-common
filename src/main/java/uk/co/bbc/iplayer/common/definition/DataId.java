@@ -1,6 +1,8 @@
 package uk.co.bbc.iplayer.common.definition;
 
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class DataId implements Identifiable {
 
@@ -18,14 +20,18 @@ public class DataId implements Identifiable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        DataId dataId = (DataId) o;
+        if (o == null) { return false; }
+        if (o == this) { return true; }
+        if (o.getClass() != getClass()) {
+            return false;
+        }
 
-        if (!id.equals(dataId.id)) return false;
+        DataId that = (DataId) o;
 
-        return true;
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .build();
     }
 
     @Override
@@ -36,9 +42,7 @@ public class DataId implements Identifiable {
 
     @Override
     public String toString() {
-        return "DataId{" +
-                "id='" + id + '\'' +
-                '}';
+        return new ToStringBuilder(this).append(id).build();
     }
 
     public static Identifiable create(String id) {
