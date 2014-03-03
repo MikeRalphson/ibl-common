@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class Pid extends ValidatingIdentifiable implements Identifiable {
-    private static Pattern pattern = Pattern.compile("^[b-df-hj-np-tv-z0-9]{8,}$");
+    // match string containing aplha numeric chars (including '-' & '_'), with a max length of 20
+    private static Pattern pattern = Pattern.compile("^[a-zA-Z0-9-_]{1,20}$");
 
     public Pid(String pid) {
         super(pid);
