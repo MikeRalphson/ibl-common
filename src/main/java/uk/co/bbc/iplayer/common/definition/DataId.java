@@ -23,7 +23,7 @@ public class DataId implements Identifiable {
 
         if (o == null) { return false; }
         if (o == this) { return true; }
-        if (o.getClass() != getClass()) {
+        if (!o.getClass().isAssignableFrom(DataId.class)) {
             return false;
         }
 

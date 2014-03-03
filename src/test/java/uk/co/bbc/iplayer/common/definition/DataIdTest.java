@@ -1,14 +1,11 @@
 package uk.co.bbc.iplayer.common.definition;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.junit.Test;
-import org.springframework.util.StopWatch;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class DataIdTest {
 
@@ -33,43 +30,22 @@ public class DataIdTest {
     }
 
     @Test
-    public void timeEquals() {
+    public void verifyAssignfromDataId() {
 
-        DataId target = new DataId("1");
-        List<DataId> dataIds = Lists.newArrayList();
+        String KEY = "pid1";
 
-        for (int i = 0; i < 1000; i++) {
-            dataIds.add(new DataId(Integer.toString(i)));
-        }
+        final Map<Identifiable, Integer> pidMap = Maps.newConcurrentMap();
 
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        for (DataId dataId : dataIds) {
-           dataId.equals(target);
-        }
-        stopWatch.stop();
+        // create keys of all known subtypes using the same string KEY (what equals is based on)
+        pidMap.put(new DataId(KEY), 1);
+        pidMap.put(new VPid(KEY), 1);
+        pidMap.put(new Pid(KEY), 1);
+        pidMap.put(new MID(KEY), 1);
 
-        System.out.println("TIME: " + stopWatch.getTotalTimeMillis());
-
-    }
-
-    @Test
-    public void timeToString() {
-
-        List<Pid> dataIds = Lists.newArrayList();
-
-        for (int i = 0; i < 10000; i++) {
-            dataIds.add(new Pid("b03wvbtz"));
-        }
-
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        for (Pid dataId : dataIds) {
-            dataId.toString();
-        }
-        stopWatch.stop();
-
-        System.out.println("toString: " + stopWatch.getTotalTimeMillis());
-
+        assertThat(pidMap.size(), is(1));
+        assertThat(pidMap.containsKey(new DataId(KEY)), is(true));
+        assertThat(pidMap.containsKey(new VPid(KEY)), is(true));
+        assertThat(pidMap.containsKey(new Pid(KEY)), is(true));
+        assertThat(pidMap.containsKey(new MID(KEY)), is(true));
     }
 }
