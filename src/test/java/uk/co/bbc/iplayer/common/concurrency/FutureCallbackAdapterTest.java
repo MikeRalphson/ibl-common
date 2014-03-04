@@ -35,12 +35,12 @@ public class FutureCallbackAdapterTest {
 
     @Test
     public void onFailureShouldLogWarnMessageIfLogLevelIsNotERROR() throws Exception {
-        when(mockLogger.isErrorEnabled()).thenReturn(false);
+        when(mockLogger.isWarnEnabled()).thenReturn(true);
         final RuntimeException throwable = buildExceptionWithMultipleCauses();
 
         unit.onFailure(throwable);
 
-        verify(mockLogger).isErrorEnabled();
+        verify(mockLogger).isWarnEnabled();
         verify(mockLogger).warn("Failed to get: " + info, throwable);
         verifyNoMoreInteractions(mockLogger);
     }
@@ -48,6 +48,7 @@ public class FutureCallbackAdapterTest {
     @Test
     public void onFailureShouldLogTop10ExeptionCausesWhenLogLevelIsERROR() throws Exception {
         when(mockLogger.isErrorEnabled()).thenReturn(true);
+        when(mockLogger.isWarnEnabled()).thenReturn(false);
 
         final RuntimeException throwable = buildExceptionWithMultipleCauses();
 
@@ -65,6 +66,7 @@ public class FutureCallbackAdapterTest {
                 "\nCaused by: class java.lang.RuntimeException - Exception Message 6" +
                 "\nCaused by: class java.lang.RuntimeException - Exception Message 5";
 
+        verify(mockLogger).isWarnEnabled();
         verify(mockLogger).isErrorEnabled();
         verify(mockLogger).error(expectedErroLog);
         verifyNoMoreInteractions(mockLogger);

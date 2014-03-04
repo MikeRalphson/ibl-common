@@ -33,6 +33,14 @@ public class DataIdTest {
     }
 
     @Test
+    public void testHashCode() {
+        DataId id1 = new DataId("1");
+        DataId duplicateOfId1 = new DataId("1");
+
+        assertThat(id1.hashCode(), is(duplicateOfId1.hashCode()));
+    }
+
+    @Test
     public void timeEquals() {
 
         DataId target = new DataId("1");
