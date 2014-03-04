@@ -22,7 +22,7 @@ public class DataId implements Identifiable {
     @Override
     public boolean equals(Object o) {
 
-        if (o == null) {
+        if (o == null || !Identifiable.class.isAssignableFrom(o.getClass())) {
             return false;
         }
 

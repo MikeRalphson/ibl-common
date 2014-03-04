@@ -30,6 +30,7 @@ public class DataIdTest {
 
         assertThat(id1, is(duplicateOfId1));
         assertThat(id1, not(is(id2)));
+        assertThat(id1, not(is((DataId) null)));
     }
 
     @Test
