@@ -7,9 +7,15 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+
+import static com.google.common.base.Predicates.notNull;
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Patch for 'aggregated futures' (called within Guava's successfulAsList) that never return by enforcing timeout.
@@ -54,9 +60,9 @@ public class MoreFutures {
 
 
     public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout) throws MoreFuturesException {
+        List<T> results = Collections.EMPTY_LIST;
         try {
-            return Futures.successfulAsList(futures).get(timeout.getLength(), timeout.getTimeUnit());
-
+            results = Futures.successfulAsList(futures).get(timeout.getLength(), timeout.getTimeUnit());
         } catch (InterruptedException e) {
             log("aggregate InterruptedException", e);
             throw new MoreFuturesException("Future interrupted", e);
@@ -69,7 +75,10 @@ public class MoreFutures {
             return filterCompleteTasks(futures);
         } finally {
             cancelActiveFutures(futures);
+            results = newArrayList(filter(results, notNull()));
         }
+
+        return results;
     }
 
     private static void log(String method, Exception e) {
