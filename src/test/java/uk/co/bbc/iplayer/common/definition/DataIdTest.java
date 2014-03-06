@@ -30,6 +30,15 @@ public class DataIdTest {
 
         assertThat(id1, is(duplicateOfId1));
         assertThat(id1, not(is(id2)));
+        assertThat(id1, not(is((DataId) null)));
+    }
+
+    @Test
+    public void testHashCode() {
+        DataId id1 = new DataId("1");
+        DataId duplicateOfId1 = new DataId("1");
+
+        assertThat(id1.hashCode(), is(duplicateOfId1.hashCode()));
     }
 
     @Test
