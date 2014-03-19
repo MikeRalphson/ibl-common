@@ -148,7 +148,7 @@ public class MoreFuturesTest {
         MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
     }
 
-    //@Test
+    @Test
     public void awaitOrThrowWhenUncheckedExceptionIsThrown() throws MoreFuturesException {
         thrown.expect(MoreFuturesException.class);
         ListenableFuture<Void> future = executorService.submit(taskThrowsAnUncheckedException);
