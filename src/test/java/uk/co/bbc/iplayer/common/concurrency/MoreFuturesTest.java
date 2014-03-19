@@ -25,7 +25,8 @@ public class MoreFuturesTest {
     private static ListeningExecutorService executorService;
     private static Callable<Void> taskToComplete;
     private static Callable<Void> futureThatTakesTooLong;
-    private static Callable<Void> taskThrowsARuntimeException;
+    private static Callable<Void> taskThrowsACheckedException;
+    private static Callable<Void> taskThrowsAnUncheckedException;
     private static Callable<Void> taskToCompleteImmediately;
 
     @Rule
@@ -58,10 +59,17 @@ public class MoreFuturesTest {
             }
         };
 
-        taskThrowsARuntimeException = new Callable<Void>() {
+        taskThrowsACheckedException = new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                throw new Exception();
+                throw new Exception("checked");
+            }
+        };
+
+        taskThrowsAnUncheckedException = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                throw new RuntimeException("Unchecked");
             }
         };
     }
@@ -90,7 +98,7 @@ public class MoreFuturesTest {
         List<ListenableFuture<Void>> futures = Lists.newArrayList();
 
         ListenableFuture<Void> future1 = executorService.submit(taskToComplete);
-        ListenableFuture<Void> future2 = executorService.submit(taskThrowsARuntimeException);
+        ListenableFuture<Void> future2 = executorService.submit(taskThrowsACheckedException);
         ListenableFuture<Void> future3 = executorService.submit(taskToComplete);
         ListenableFuture<Void> future4 = executorService.submit(taskToComplete);
 
@@ -131,6 +139,20 @@ public class MoreFuturesTest {
     @Test
     public void futureHasTimeoutException() throws Exception {
         verifyCancelledAndExceptionThrown(new TimeoutException("boom!"));
+    }
+
+    @Test
+    public void awaitOrThrowWhenCheckedExceptionIsThrown() throws MoreFuturesException {
+        thrown.expect(MoreFuturesException.class);
+        ListenableFuture<Void> future = executorService.submit(taskThrowsACheckedException);
+        MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
+    }
+
+    //@Test
+    public void awaitOrThrowWhenUncheckedExceptionIsThrown() throws MoreFuturesException {
+        thrown.expect(MoreFuturesException.class);
+        ListenableFuture<Void> future = executorService.submit(taskThrowsAnUncheckedException);
+        MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
     }
 
     private void verifyCancelledAndExceptionThrown(Exception exception) throws InterruptedException, ExecutionException, TimeoutException {
