@@ -1,5 +1,6 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
+import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.google.common.collect.Lists.*;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
@@ -28,7 +30,7 @@ public class MoreFutures2Test {
     }
 
     @Test
-    public void createDefault() {
+    public void createFutureChainContainingUsingAdd() throws Exception {
 
         List<String> aggregation = MoreFutures2
                     .chain(String.class)
@@ -36,6 +38,18 @@ public class MoreFutures2Test {
                         .add(createTask("2"))
                         .add(createTask("3"))
                         .usingExecutorService(executorService)
+                .aggregate();
+
+        assertThat(aggregation, hasItems("1", "2", "3"));
+    }
+
+    @Test
+    public void createFutureChainUsingAddAll() throws Exception {
+
+        List<String> aggregation = MoreFutures2
+                .chain(String.class)
+                .addAll(newArrayList(createTask("1"), createTask("2"), createTask("3")))
+                .usingExecutorService(executorService)
                 .aggregate();
 
         assertThat(aggregation, hasItems("1", "2", "3"));

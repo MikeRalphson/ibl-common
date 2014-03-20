@@ -1,23 +1,22 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-import uk.co.bbc.iplayer.common.utils.Listenable;
-
+import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.util.concurrent.Futures.*;
-import static com.google.common.util.concurrent.MoreExecutors.*;
+import static com.google.common.util.concurrent.Futures.getUnchecked;
+import static com.google.common.util.concurrent.Futures.successfulAsList;
+import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 
 public final class MoreFutures2 {
 
@@ -34,6 +33,7 @@ public final class MoreFutures2 {
     public static class Builder<T> {
 
         private Optional<ExecutorService> executorService;
+        private ThrowableFunction<ListenableFuture<List<T>>, List<T>> aggregator;
         private List<Callable<T>> tasks = Lists.newArrayList();
 
         public Builder<T> add(Callable<T> task) {
@@ -53,7 +53,7 @@ public final class MoreFutures2 {
             return this;
         }
 
-        public List<T> aggregate() {
+        public List<T> aggregate(ThrowableFunction<List<ListenableFuture<T>>, List<T>> aggregator) throws Exception {
 
             // build the executor service. Use exiting on default?
             // submit the tasks
@@ -69,11 +69,19 @@ public final class MoreFutures2 {
                 futures.add(listeningExecutorService.submit(task));
             }
 
-            ListenableFuture<List<T>> aggregate = successfulAsList(futures);
-
-            return getUnchecked(aggregate);
+            return aggregator.apply(futures);
         }
 
+        public List<T> aggregate() throws Exception {
+            return aggregate(new FilterSuccessful<T>());
+        }
+    }
+
+    public static class FilterSuccessful<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
+        @Override
+        public List<T> apply(List<ListenableFuture<T>> input) throws Exception {
+            return Futures.successfulAsList(input).get();
+        }
     }
 
 }
