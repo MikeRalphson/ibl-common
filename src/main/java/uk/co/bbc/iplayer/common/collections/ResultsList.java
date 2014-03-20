@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ResultsList<T> implements Serializable {
 
-    private static int DEFAULT_PAGE = 1;
+    public static final int DEFAULT_PAGE = 1;
 
     private final List<T> list;
     private final Long total;
