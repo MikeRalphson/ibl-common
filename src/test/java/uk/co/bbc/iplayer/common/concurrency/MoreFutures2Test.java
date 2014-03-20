@@ -29,7 +29,7 @@ public class MoreFutures2Test {
         Callable<String> task = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return null;
+                return "done";
             }
         };
 
@@ -38,5 +38,7 @@ public class MoreFutures2Test {
                         .add(task)
                         .usingExecutorService(executorService)
                 .aggregate();
+
+        System.out.println(aggregate);
     }
 }
