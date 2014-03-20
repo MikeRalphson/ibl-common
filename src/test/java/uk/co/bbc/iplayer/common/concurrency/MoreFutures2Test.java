@@ -9,6 +9,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+
 public class MoreFutures2Test {
 
     private ExecutorService executorService;
@@ -26,19 +30,23 @@ public class MoreFutures2Test {
     @Test
     public void createDefault() {
 
-        Callable<String> task = new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return "done";
-            }
-        };
-
-        List<String> aggregate = MoreFutures2
+        List<String> aggregation = MoreFutures2
                     .chain(String.class)
-                        .add(task)
+                        .add(createTask("1"))
+                        .add(createTask("2"))
+                        .add(createTask("3"))
                         .usingExecutorService(executorService)
                 .aggregate();
 
-        System.out.println(aggregate);
+        assertThat(aggregation, hasItems("1", "2", "3"));
+    }
+
+    private Callable<String> createTask(final String returnStr) {
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return returnStr;
+            }
+        };
     }
 }
