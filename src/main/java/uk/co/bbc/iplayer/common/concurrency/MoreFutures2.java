@@ -6,18 +6,17 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 
 public final class MoreFutures2 {
 
-    public static final Duration DURATION = Duration.create();
+    public static final Duration DEFAULT_DURATION = Duration.create();
+    public static final boolean INTERRUPT_TASK = true;
 
     private MoreFutures2() {
         throw new AssertionError();
@@ -101,7 +100,6 @@ public final class MoreFutures2 {
     }
 
     /**
-     *
      * @param <T>
      */
     public static class FilterSuccessful<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
@@ -112,13 +110,46 @@ public final class MoreFutures2 {
     }
 
     /**
-     *
      * @param <T>
      */
     public static class Atomic<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
         @Override
         public List<T> apply(List<ListenableFuture<T>> input) throws Exception {
             return Futures.allAsList(input).get();
+        }
+    }
+
+    /**
+     *
+     * @param future
+     * @param <T>
+     * @return
+     * @throws MoreFuturesException
+     */
+    public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
+        return await(future, DEFAULT_DURATION);
+    }
+
+    /**
+     *
+     * @param future - future result
+     * @param duration - defined timeout
+     * @param <T>
+     * @return
+     * @throws MoreFuturesException
+     */
+    public static <T> T await(ListenableFuture<? extends T> future, Duration duration) throws MoreFuturesException {
+        try {
+            return Futures.get(
+                    future,
+                    duration.getLength(),
+                    duration.getTimeUnit(),
+                    MoreFuturesException.class
+            );
+        } finally {
+            if (!future.isDone()) {
+                future.cancel(INTERRUPT_TASK);
+            }
         }
     }
 }
