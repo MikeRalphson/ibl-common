@@ -5,13 +5,17 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
+import static uk.co.bbc.iplayer.common.concurrency.EvenMoreExecutors.*;
 
 public final class MoreFutures2 {
 
@@ -36,9 +40,16 @@ public final class MoreFutures2 {
      */
     public static class Builder<T> {
 
-        private Optional<ExecutorService> executorService;
+        private Optional<ExecutorService> executorService = Optional.absent();
         private ThrowableFunction<ListenableFuture<List<T>>, List<T>> aggregator;
         private List<Callable<T>> tasks = Lists.newArrayList();
+        private Class<? extends Exception> onExceptionThrow = MoreFuturesException.class;
+
+        private static class DefaultExecutorServiceFactory {
+            public static final int MAX_THREAD_BOUND = (Runtime.getRuntime().availableProcessors() + 1);
+            public static ExecutorService ExecutorService =
+                    MoreExecutors.getExitingExecutorService((ThreadPoolExecutor) boundedNamedCachedExecutorService(MAX_THREAD_BOUND, "MoreFutureDefault"));
+        }
 
         /**
          * @param task
@@ -68,16 +79,26 @@ public final class MoreFutures2 {
         }
 
         /**
+         *
+         * @param toThrow
+         * @param <E>
+         * @return
+         */
+        public <E extends Exception> Builder<T> onExceptionThrow(Class<E> toThrow) {
+            this.onExceptionThrow = toThrow;
+            return this;
+        }
+
+        /**
          * @param aggregator
          * @return
          * @throws Exception
          */
         public List<T> aggregate(ThrowableFunction<List<ListenableFuture<T>>, List<T>> aggregator) throws Exception {
 
-            // build the executor service. Use exiting on default?
-
+            // do we need a default executor (with automatic shutdown)?
             if (!executorService.isPresent()) {
-                // assigned default (exiting executor. Create as Singleton)
+                executorService = Optional.of(DefaultExecutorServiceFactory.ExecutorService);
             }
 
             ListeningExecutorService listeningExecutorService = listeningDecorator(executorService.get());
@@ -95,7 +116,18 @@ public final class MoreFutures2 {
          * @throws Exception
          */
         public List<T> aggregate() throws Exception {
-            return aggregate(new FilterSuccessful<T>());
+            return aggregate(new Atomic<T>(onExceptionThrow));
+        }
+
+        /**
+         *
+         * @param function
+         * @param <S>
+         * @return
+         * @throws Exception
+         */
+        public <S> S aggregate(ThrowableFunction<List<T>, S> function) throws Exception {
+            return function.apply(aggregate());
         }
     }
 
@@ -105,7 +137,8 @@ public final class MoreFutures2 {
     public static class FilterSuccessful<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
         @Override
         public List<T> apply(List<ListenableFuture<T>> input) throws Exception {
-            return Futures.successfulAsList(input).get();
+            ListenableFuture<List<T>> listenableFuture = Futures.successfulAsList(input);
+            return await(listenableFuture);
         }
     }
 
@@ -113,38 +146,31 @@ public final class MoreFutures2 {
      * @param <T>
      */
     public static class Atomic<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
+
+        private Class<? extends Exception> toThrow = MoreFuturesException.class;
+
+        public Atomic(Class<? extends Exception> toThrow) {
+            this.toThrow = toThrow;
+        }
+
         @Override
         public List<T> apply(List<ListenableFuture<T>> input) throws Exception {
-            return Futures.allAsList(input).get();
+            ListenableFuture<List<T>> listenableFuture = Futures.allAsList(input);
+            return await(listenableFuture, Duration.create(), toThrow);
         }
     }
 
-    /**
-     *
-     * @param future
-     * @param <T>
-     * @return
-     * @throws MoreFuturesException
-     */
     public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
-        return await(future, DEFAULT_DURATION);
+        return await(future, DEFAULT_DURATION, MoreFuturesException.class);
     }
 
-    /**
-     *
-     * @param future - future result
-     * @param duration - defined timeout
-     * @param <T>
-     * @return
-     * @throws MoreFuturesException
-     */
-    public static <T> T await(ListenableFuture<? extends T> future, Duration duration) throws MoreFuturesException {
+    public static <T, E extends Exception> T await(ListenableFuture<? extends T> future, Duration duration, Class<E> exception) throws E {
         try {
             return Futures.get(
                     future,
                     duration.getLength(),
                     duration.getTimeUnit(),
-                    MoreFuturesException.class
+                    exception
             );
         } finally {
             if (!future.isDone()) {
