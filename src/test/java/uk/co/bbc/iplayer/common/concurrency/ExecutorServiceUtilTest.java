@@ -30,17 +30,18 @@ public class ExecutorServiceUtilTest {
     public void verifyShutdownWithTasksRunning() throws InterruptedException {
 
         for (int i = 0; i < 10; i++) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            executorService.execute(createTask(1));
         }
+
+        ExecutorServiceUtil.shutdownQuietly(executorService);
+
+        assertThat(executorService.isShutdown(), is(true));
+    }
+
+    @Test
+    public void verifyShutdownThatExceedsDefaultWaitTime() throws InterruptedException {
+        int defaultWaitTime = 5;
+        executorService.execute(createTask(defaultWaitTime));
 
         ExecutorServiceUtil.shutdownQuietly(executorService);
 
@@ -57,5 +58,18 @@ public class ExecutorServiceUtilTest {
     public void doesntThrowWhenReceivedNull() throws InterruptedException {
         executorService.shutdownNow();
         ExecutorServiceUtil.shutdownQuietly(null);
+    }
+
+    private Runnable createTask(final int sleep) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(sleep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 }
