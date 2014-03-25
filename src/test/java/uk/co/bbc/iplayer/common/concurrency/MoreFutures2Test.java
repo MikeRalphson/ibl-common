@@ -95,7 +95,7 @@ public class MoreFutures2Test {
     }
 
     @Test
-    public void verifyOnException() throws Exception {
+    public void verifyExceptionConvertionWhenAnExceptionIsThrown() throws Exception {
 
         expectedException.expect(TestFutureException.class);
         expectedException.expectMessage("raised from task");
@@ -141,6 +141,20 @@ public class MoreFutures2Test {
         assertThat(thrown, is(true));
         assertThat(listenableFuture.isDone(), is(true));
     }
+
+    /**
+    @Test
+    public void pipingFutures() {
+
+           // PipeableFuture to allow futures to be chain (using transform)
+
+           MoreFutures2
+                .pipe(future)
+                    .to(new CustomFilter())
+                    .to(new CustomSort())
+                .await();
+    }
+    */
 
     private Callable<String> createTask(final String returnStr) {
         return new Callable<String>() {
