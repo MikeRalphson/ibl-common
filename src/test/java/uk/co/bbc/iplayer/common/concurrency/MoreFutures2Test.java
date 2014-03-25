@@ -145,13 +145,13 @@ public class MoreFutures2Test {
     public void pipingFutures() throws ExecutionException, InterruptedException {
 
         // PipeableFutureTask to allow futures to be chain (using transform)
-        ListenableFuture<String> future = Futures.immediateFuture("test");
-        String result = MoreFutures2
+        ListenableFuture<Boolean> future = Futures.immediateFuture(true);
+        MoreFutures2
                 .pipe(future)
-                    .to(new ThrowableFunction<String, String>() {
+                    .to(new ThrowableFunction<String, Boolean>() {
                         @Override
-                        public String apply(String input) throws Exception {
-                            return input.toUpperCase();
+                        public Boolean apply(String input) throws Exception {
+                            return input.length() > 0;
                         }
                      })
                 .get();
