@@ -36,6 +36,9 @@ public final class MoreFutures2 {
     }
 
     /**
+     *
+     * Future Aggregation builder (DSL)
+     *
      * @param <T>
      */
     public static class Builder<T> {
@@ -177,5 +180,10 @@ public final class MoreFutures2 {
                 future.cancel(INTERRUPT_TASK);
             }
         }
+    }
+
+    public static <T> PipeableFutureTask<T> pipe(ListenableFuture<T> future) {
+        checkNotNull(future);
+        return new PipeableFutureTask(future);
     }
 }

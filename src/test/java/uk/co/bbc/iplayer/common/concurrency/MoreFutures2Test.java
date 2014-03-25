@@ -1,5 +1,6 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.After;
@@ -11,10 +12,7 @@ import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -142,19 +140,23 @@ public class MoreFutures2Test {
         assertThat(listenableFuture.isDone(), is(true));
     }
 
-    /**
+
     @Test
-    public void pipingFutures() {
+    public void pipingFutures() throws ExecutionException, InterruptedException {
 
-           // PipeableFuture to allow futures to be chain (using transform)
-
-           MoreFutures2
+        // PipeableFutureTask to allow futures to be chain (using transform)
+        ListenableFuture<String> future = Futures.immediateFuture("test");
+        String result = MoreFutures2
                 .pipe(future)
-                    .to(new CustomFilter())
-                    .to(new CustomSort())
-                .await();
+                    .to(new ThrowableFunction<String, String>() {
+                        @Override
+                        public String apply(String input) throws Exception {
+                            return input.toUpperCase();
+                        }
+                     })
+                .get();
     }
-    */
+
 
     private Callable<String> createTask(final String returnStr) {
         return new Callable<String>() {
@@ -176,7 +178,7 @@ public class MoreFutures2Test {
     }
 
     private <T> ListenableFuture<T> createListenableFuture(Callable<T> task) {
-       return MoreExecutors.listeningDecorator(executorService).submit(task);
+        return MoreExecutors.listeningDecorator(executorService).submit(task);
     }
 
 }
