@@ -7,6 +7,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by spragn01 on 25/03/2014.
  */
+
+// TODO: forwardingFutureTask
 public class PipeableFutureTask<V> implements PipeableFuture<V> {
 
     private Future<V> delegate;
@@ -14,11 +16,6 @@ public class PipeableFutureTask<V> implements PipeableFuture<V> {
     public PipeableFutureTask(Future<V> delegate) {
         checkNotNull(delegate, "expected future delegate, got null");
         this.delegate = delegate;
-    }
-
-    @Override
-    public <T> PipeableFuture<V> to(ThrowableFunction<? super T, ? super V> input) {
-        return null;
     }
 
     @Override
@@ -46,12 +43,8 @@ public class PipeableFutureTask<V> implements PipeableFuture<V> {
         return delegate.get(l, timeUnit);
     }
 
-    /**
     @Override
-    public <T, S> PipeableFuture<V> to(ThrowableFunction<? super T, ? super S> input) {
+    public <T, S> PipeableFuture<S> to(ThrowableFunction<? super T, ? super S> input) {
         return null;
     }
-    */
-
-
 }

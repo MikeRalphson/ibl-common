@@ -18,6 +18,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class MoreFutures2Test {
 
@@ -140,18 +141,32 @@ public class MoreFutures2Test {
         assertThat(listenableFuture.isDone(), is(true));
     }
 
+    @Test
+    public void successfulGetFromPipeableFuture() throws ExecutionException, InterruptedException {
+
+        ListenableFuture<String> sourceFuture = Futures.immediateFuture("original");
+
+        // disallow direct construction - only through moreFutures
+        PipeableFuture<String> pipeableFuture = new PipeableFutureTask<String>(sourceFuture);
+
+        PipeableFuture<Boolean> product = pipeableFuture
+                .to(new ThrowableFunction<String, Boolean>() {
+                    @Override
+                    public Boolean apply(String input) throws Exception {
+                        return input.startsWith("ori");
+                    }
+                });
+
+        Boolean match = product.get();
+
+        assertTrue(match);
+    }
 
     @Test
-    public void pipingFutures() throws ExecutionException, InterruptedException {
+    public void createFuturePipeline() throws ExecutionException, InterruptedException {
 
         // PipeableFutureTask to allow futures to be chain (using transform)
         ListenableFuture<Boolean> future = Futures.immediateFuture(true);
-
-        PipeableFuture<String> pipeable = new PipeableFutureTask<String>(null);
-        pipeable
-                .to(null)
-                .to(null)
-                .to(null);
 
         Boolean aBoolean = MoreFutures2
                 .pipe(future)
