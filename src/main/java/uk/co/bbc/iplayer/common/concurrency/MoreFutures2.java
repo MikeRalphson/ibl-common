@@ -183,8 +183,7 @@ public final class MoreFutures2 {
         }
     }
 
-    public static <T> PipeableFutureTask<T> pipe(ListenableFuture<T> future) {
-        checkNotNull(future);
-        return new PipeableFutureTask(future);
+    public static <T> PipeableFuture<T> pipe(ListenableFuture<T> future) {
+        return PipeableFutureTask.create(future);
     }
 }

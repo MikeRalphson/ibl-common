@@ -144,10 +144,12 @@ public class MoreFutures2Test {
     @Test
     public void successfulGetFromPipeableFuture() throws ExecutionException, InterruptedException {
 
-        ListenableFuture<String> sourceFuture = Futures.immediateFuture("original");
+        String sourceInput = "original";
+
+        ListenableFuture<String> sourceFuture = Futures.immediateFuture(sourceInput);
 
         // disallow direct construction - only through moreFutures
-        PipeableFuture<String> pipeableFuture = new PipeableFutureTask<String>(sourceFuture);
+        PipeableFuture<String> pipeableFuture = PipeableFutureTask.create(sourceFuture);
 
         PipeableFuture<Boolean> product = pipeableFuture
                 .to(new ThrowableFunction<String, Boolean>() {
@@ -168,15 +170,18 @@ public class MoreFutures2Test {
         // PipeableFutureTask to allow futures to be chain (using transform)
         ListenableFuture<Boolean> future = Futures.immediateFuture(true);
 
-        Boolean aBoolean = MoreFutures2
+        PipeableFuture<String> pipeableFuture = MoreFutures2
                 .pipe(future)
-                .to(new ThrowableFunction<String, Boolean>() {
+                .to(new ThrowableFunction<Boolean, String>() {
                     @Override
-                    public Boolean apply(String input) throws Exception {
-                        return input.length() > 0;
+                    public String apply(Boolean input) throws Exception {
+                        return input.toString();
                     }
-                })
-                .get();
+                });
+
+        String result = pipeableFuture.get();
+
+        assertThat(result, is("true"));
     }
 
 
