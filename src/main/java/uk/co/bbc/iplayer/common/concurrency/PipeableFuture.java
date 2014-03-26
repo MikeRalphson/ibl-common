@@ -8,5 +8,5 @@ import java.util.concurrent.Future;
  * Created by spragn01 on 25/03/2014.
  */
 public interface PipeableFuture<V> extends Future<V> {
-    <T> PipeableFuture<V> to(ThrowableFunction<T, V> input);
+    <T> PipeableFuture<V> to(ThrowableFunction<? super T, ? super V> input);
 }

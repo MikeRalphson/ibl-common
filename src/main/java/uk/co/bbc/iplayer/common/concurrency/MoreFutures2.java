@@ -48,6 +48,7 @@ public final class MoreFutures2 {
         private List<Callable<T>> tasks = Lists.newArrayList();
         private Class<? extends Exception> onExceptionThrow = MoreFuturesException.class;
 
+        // Or use caller runs policy?
         private static class DefaultExecutorServiceFactory {
             public static final int MAX_THREAD_BOUND = (Runtime.getRuntime().availableProcessors() + 1);
             public static ExecutorService ExecutorService =

@@ -146,14 +146,21 @@ public class MoreFutures2Test {
 
         // PipeableFutureTask to allow futures to be chain (using transform)
         ListenableFuture<Boolean> future = Futures.immediateFuture(true);
-        MoreFutures2
+
+        PipeableFuture<String> pipeable = new PipeableFutureTask<String>(null);
+        pipeable
+                .to(null)
+                .to(null)
+                .to(null);
+
+        Boolean aBoolean = MoreFutures2
                 .pipe(future)
-                    .to(new ThrowableFunction<String, Boolean>() {
-                        @Override
-                        public Boolean apply(String input) throws Exception {
-                            return input.length() > 0;
-                        }
-                     })
+                .to(new ThrowableFunction<String, Boolean>() {
+                    @Override
+                    public Boolean apply(String input) throws Exception {
+                        return input.length() > 0;
+                    }
+                })
                 .get();
     }
 
