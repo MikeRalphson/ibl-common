@@ -12,6 +12,7 @@ import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -165,7 +166,7 @@ public class MoreFutures2Test {
     }
 
     @Test
-    public void createFuturePipeline() throws ExecutionException, InterruptedException {
+    public void createSimpleFuturePipeline() throws ExecutionException, InterruptedException {
 
         // PipeableFutureTask to allow futures to be chain (using transform)
         ListenableFuture<Boolean> future = Futures.immediateFuture(true);
@@ -184,6 +185,24 @@ public class MoreFutures2Test {
         assertThat(result, is("true"));
     }
 
+    @Test
+    public void createFuturePipelineWithMultipleTransformations() throws ExecutionException, InterruptedException {
+
+        String input = "start";
+
+        ListenableFuture<String> future = Futures.immediateFuture(input);
+
+        PipeableFuture<Map<String, Integer>> pipeableFuture = MoreFutures2
+                .pipe(future)
+                    .to(new StringToASCII())
+                    .to(new ASCIIToString())
+                    .to(new CreateStringLengthMap());
+
+        Map<String, Integer> stringIntegerMap = pipeableFuture.get();
+
+        assertThat(stringIntegerMap.size(), is(1));
+        assertThat(stringIntegerMap.get(input), is(input.length()));
+    }
 
     private Callable<String> createTask(final String returnStr) {
         return new Callable<String>() {
