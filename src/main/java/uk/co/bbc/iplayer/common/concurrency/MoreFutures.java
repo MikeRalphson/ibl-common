@@ -6,13 +6,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
@@ -25,6 +24,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public class MoreFutures {
 
     private final static boolean INTERRUPT_TASK = true;
+    private final static Duration DURATION = Duration.create();
     private static final Logger LOG = LoggerFactory.getLogger(MoreFutures.class);
 
     private MoreFutures() {
@@ -115,6 +115,49 @@ public class MoreFutures {
         }
 
         return completedTasks;
+    }
+
+    public static <T, EX extends Exception> T awaitOrThrow(ListenableFuture<T> future, Class<EX> toThrow) throws EX {
+
+        try {
+            return await(future, Duration.create());
+
+        } catch (MoreFuturesException e) {
+            EX instance = initException(toThrow, e);
+            throw instance;
+        }
+    }
+
+    private static <EX> EX initException(Class<EX> toThrow, Throwable sourceException) {
+
+        Constructor[] allConstructors = toThrow.getDeclaredConstructors();
+        for (Constructor constructor : allConstructors) {
+
+            List<Object> constructorParameters = Lists.newArrayList();
+
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
+
+            for (int i = 0; i < parameterTypes.length; i++) {
+                if (parameterTypes[i].equals(String.class)) {
+                    constructorParameters.add(sourceException.getMessage());
+
+                } else if (parameterTypes[i].equals(Throwable.class)) {
+                    constructorParameters.add(sourceException);
+                }
+            }
+
+            try {
+                return (EX) constructor.newInstance(constructorParameters.toArray());
+            } catch (InstantiationException e) {
+                continue;
+            } catch (IllegalAccessException e) {
+                continue;
+            } catch (InvocationTargetException e) {
+                continue;
+            }
+        }
+
+        throw new IllegalArgumentException("Can't find constructor for " + toThrow);
     }
 
 }
