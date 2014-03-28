@@ -8,7 +8,7 @@ import uk.co.bbc.iplayer.common.utils.ExceptionUtil;
 import javax.annotation.Nullable;
 
 public abstract class CheckedFunction<T, V> implements Function<T, V> {
-    static Logger LOG = LoggerFactory.getLogger(CheckedCallable.class);
+    static Logger LOG = LoggerFactory.getLogger(CheckedFunction.class);
     private String info;
 
     protected CheckedFunction(String info) {
