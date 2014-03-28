@@ -10,10 +10,10 @@ import java.util.concurrent.Callable;
 public abstract class CheckedCallable<V> implements Callable<V> {
     static Logger LOG = LoggerFactory.getLogger(CheckedCallable.class);
 
-    private String info;
+    private String taskDescription;
 
-    public CheckedCallable(String info) {
-        this.info = info;
+    public CheckedCallable(String taskDescription) {
+        this.taskDescription = taskDescription;
     }
 
     @Override
@@ -21,10 +21,10 @@ public abstract class CheckedCallable<V> implements Callable<V> {
         try {
             V result = checkedCall();
             onSuccess();
-            LOG.debug("Success: {}", info);
+            LOG.debug("Success: {}", taskDescription);
             return result;
         } catch (Exception e) {
-            ExceptionUtil.logExceptionSummary(LOG, info, e);
+            ExceptionUtil.logExceptionSummary(LOG, taskDescription, e);
             onFailure();
             throw e;
         }

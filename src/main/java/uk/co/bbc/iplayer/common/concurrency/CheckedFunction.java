@@ -9,10 +9,10 @@ import javax.annotation.Nullable;
 
 public abstract class CheckedFunction<T, V> implements Function<T, V> {
     static Logger LOG = LoggerFactory.getLogger(CheckedFunction.class);
-    private String info;
+    private String taskDescription;
 
-    protected CheckedFunction(String info) {
-        this.info = info;
+    protected CheckedFunction(String taskDescription) {
+        this.taskDescription = taskDescription;
     }
 
     @Nullable
@@ -20,10 +20,10 @@ public abstract class CheckedFunction<T, V> implements Function<T, V> {
     public final V apply(@Nullable T t) {
         try {
             final V result = checkedApply(t);
-            LOG.debug("Success: {}", info);
+            LOG.debug("Success: {}", taskDescription);
             return result;
         } catch (RuntimeException e) {
-            ExceptionUtil.logExceptionSummary(LOG, info, e);
+            ExceptionUtil.logExceptionSummary(LOG, taskDescription, e);
             throw e;
         }
     }
