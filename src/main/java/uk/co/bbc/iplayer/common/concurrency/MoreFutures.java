@@ -24,7 +24,6 @@ import static com.google.common.collect.Lists.newArrayList;
 public class MoreFutures {
 
     private final static boolean INTERRUPT_TASK = true;
-    private final static Duration DURATION = Duration.create();
     private static final Logger LOG = LoggerFactory.getLogger(MoreFutures.class);
 
     private MoreFutures() {
