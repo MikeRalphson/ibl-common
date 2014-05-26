@@ -2,6 +2,7 @@ package uk.co.bbc.iplayer.common.concurrency;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -116,12 +117,7 @@ public final class MoreFutures2 {
          * @return
          */
         public FutureDSL<T> add(final ListenableFuture<T> future) {
-            futureSuppliers.add(new Supplier<ListenableFuture<T>>() {
-                @Override
-                public ListenableFuture<T> get() {
-                    return future;
-                }
-            });
+            futureSuppliers.add(Suppliers.ofInstance(future));
             return this;
         }
 
