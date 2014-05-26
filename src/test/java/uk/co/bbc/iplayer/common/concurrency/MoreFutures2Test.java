@@ -18,6 +18,7 @@ import java.util.concurrent.*;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -42,11 +43,11 @@ public class MoreFutures2Test {
     public void createFutureChainContainingUsingAdd() throws Exception {
 
         List<String> aggregation = MoreFutures2
-                .chain(String.class)
+                .composeFuturesOf(String.class)
                 .add(createTask("1"))
                 .add(createTask("2"))
                 .add(createTask("3"))
-                .usingExecutorService(executorService)
+                .using(executorService)
                 .aggregate();
 
         assertThat(aggregation, hasItems("1", "2", "3"));
@@ -56,7 +57,7 @@ public class MoreFutures2Test {
     public void createFutureChainUsingDefaultExecutorService() throws Exception {
 
         List<String> aggregation = MoreFutures2
-                .chain(String.class)
+                .composeFuturesOf(String.class)
                 .add(createTask("1"))
                 .add(createTask("2"))
                 .add(createTask("3"))
@@ -69,9 +70,9 @@ public class MoreFutures2Test {
     public void createFutureChainUsingAddAll() throws Exception {
 
         List<String> aggregation = MoreFutures2
-                .chain(String.class)
+                .composeFuturesOf(String.class)
                 .addAll(newArrayList(createTask("1"), createTask("2"), createTask("3")))
-                .usingExecutorService(executorService)
+                .using(executorService)
                 .aggregate();
 
         assertThat(aggregation, hasItems("1", "2", "3"));
@@ -80,9 +81,9 @@ public class MoreFutures2Test {
     @Test
     public void customAggregation() throws Exception {
         Integer length = MoreFutures2
-                .chain(String.class)
+                .composeFuturesOf(String.class)
                 .addAll(newArrayList(createTask("I"), createTask("II"), createTask("III")))
-                .usingExecutorService(executorService)
+                .using(executorService)
                 .aggregate(new ThrowableFunction<List<String>, Integer>() {
                     @Override
                     public Integer apply(List<String> input) throws Exception {
@@ -95,13 +96,26 @@ public class MoreFutures2Test {
     }
 
     @Test
+    public void composedFutures() throws Exception {
+
+        PipeableFuture<List<String>> pipeableFuture = MoreFutures2
+                .composeFuturesOf(String.class)
+                .addAll(newArrayList(createTask("I"), createTask("II"), createTask("III")))
+                .using(executorService)
+                .asFuture();
+
+        List<String> strings = pipeableFuture.get();
+        assertThat(strings, contains("I", "II", "III"));
+    }
+
+    @Test
     public void verifyExceptionConvertionWhenAnExceptionIsThrown() throws Exception {
 
         expectedException.expect(TestFutureException.class);
         expectedException.expectMessage("raised from task");
 
         MoreFutures2
-                .chain(String.class)
+                .composeFuturesOf(String.class)
                 .add(new Callable<String>() {
                     @Override
                     public String call() throws Exception {
@@ -109,7 +123,7 @@ public class MoreFutures2Test {
                     }
                 })
                 .onExceptionThrow(TestFutureException.class)
-                .usingExecutorService(executorService)
+                .using(executorService)
                 .aggregate();
     }
 
@@ -168,7 +182,7 @@ public class MoreFutures2Test {
     @Test
     public void createSimpleFuturePipeline() throws ExecutionException, InterruptedException {
 
-        // PipeableFutureTask to allow futures to be chain (using transform)
+        // PipeableFutureTask to allow futures to be composeFuturesOf (using transform)
         ListenableFuture<Boolean> future = Futures.immediateFuture(true);
 
         PipeableFuture<String> pipeableFuture = MoreFutures2
@@ -202,6 +216,23 @@ public class MoreFutures2Test {
 
         assertThat(stringIntegerMap.size(), is(1));
         assertThat(stringIntegerMap.get(input), is(input.length()));
+    }
+
+    @Test
+    public void composeFuturesUsingExistingFutures() throws Exception {
+
+        ListenableFuture<String> listenableFuture1 = Futures.immediateFuture("I");
+        ListenableFuture<String> listenableFuture2 = Futures.immediateFuture("II");
+        ListenableFuture<String> listenableFuture3 = Futures.immediateFuture("III");
+
+        List<String> strings = MoreFutures2
+                .composeFuturesOf(String.class)
+                .add(listenableFuture1)
+                .add(listenableFuture2)
+                .add(listenableFuture3)
+                .aggregate();
+
+        assertThat(strings, contains("I", "II", "III"));
     }
 
     private Callable<String> createTask(final String returnStr) {
