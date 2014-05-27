@@ -15,7 +15,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class MoreFuturesTest {
+public class _MoreFuturesTest {
 
     private static ListeningExecutorService executorService;
     private static Callable<String> taskToComplete;
@@ -97,7 +97,7 @@ public class MoreFuturesTest {
         futures.add(future1);
         futures.add(future2);
 
-        List<String> results = MoreFutures.aggregate(futures, new Duration(TimeUnit.MILLISECONDS, 50));
+        List<String> results = _MoreFutures.aggregate(futures, new Duration(TimeUnit.MILLISECONDS, 50));
 
         assertThat(results.size(), is(1));
         assertThat(future2.get(), equalTo(results.get(0)));
@@ -115,7 +115,7 @@ public class MoreFuturesTest {
         futures.add(future1);
         futures.add(future2);
 
-        List<String> results = MoreFutures.aggregate(futures, new Duration(TimeUnit.MILLISECONDS, 50));
+        List<String> results = _MoreFutures.aggregate(futures, new Duration(TimeUnit.MILLISECONDS, 50));
 
         assertThat(results.size(), is(1));
         assertThat(future2.get(), equalTo(results.get(0)));
@@ -137,7 +137,7 @@ public class MoreFuturesTest {
         futures.add(future3);
         futures.add(future4);
 
-        List<String> results = MoreFutures.aggregate(futures, new Duration(TimeUnit.MILLISECONDS, 200));
+        List<String> results = _MoreFutures.aggregate(futures, new Duration(TimeUnit.MILLISECONDS, 200));
 
         assertAllFutureAreComplete(futures);
         assertThat(results.size(), is(3));
@@ -152,7 +152,7 @@ public class MoreFuturesTest {
         future.cancel(true);
         futures.add(future);
 
-        MoreFutures.aggregate(futures, Duration.create());
+        _MoreFutures.aggregate(futures, Duration.create());
 
         assertAllFutureAreComplete(futures);
     }
@@ -176,14 +176,14 @@ public class MoreFuturesTest {
     public void awaitOrThrowWhenCheckedExceptionIsThrown() throws MoreFuturesException {
         thrown.expect(MoreFuturesException.class);
         ListenableFuture<String> future = executorService.submit(taskThrowsCheckedException);
-        MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
+        _MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
     }
 
     @Test
     public void awaitOrThrowWhenUncheckedExceptionIsThrown() throws MoreFuturesException {
         thrown.expect(MoreFuturesException.class);
         ListenableFuture<String> future = executorService.submit(taskThrowsARuntimeException);
-        MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
+        _MoreFutures.awaitOrThrow(future, MoreFuturesException.class);
     }
 
     private void verifyCancelledAndExceptionThrown(Exception exception) throws InterruptedException, ExecutionException, TimeoutException {
@@ -191,7 +191,7 @@ public class MoreFuturesTest {
         when(future.get(anyLong(), any(TimeUnit.class))).thenThrow(exception);
         MoreFuturesException expected = null;
         try {
-            MoreFutures.await(future, Duration.create());
+            _MoreFutures.await(future, Duration.create());
         } catch (Exception ex) {
             expected = (MoreFuturesException) ex;
         }
