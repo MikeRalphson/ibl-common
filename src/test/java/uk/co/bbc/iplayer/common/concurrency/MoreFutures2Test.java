@@ -320,6 +320,7 @@ public class MoreFutures2Test {
         List<String> strings = MoreFutures
                 .composeFuturesOf(String.class)
                     .addFuture(pending)
+                // TODO
                     .duration(inMilliSeconds(1))
                 .aggregateAndTransform(new MoreFutures.FilterSuccessful<String>());
 
