@@ -11,6 +11,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -31,68 +33,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.co.bbc.iplayer.common.concurrency.Duration.*;
+import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createTask;
+import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createThatThrows;
+import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createTimedTask;
 
-public class MoreFutures2Test {
+public class MoreFuturesTest {
 
-    private static Callable<String> taskToComplete;
-    private static Callable<String> taskThatTakesTooLong;
-    private static Callable<String> taskThrowsARuntimeException;
-    private static Callable<String> taskThrowsCheckedException;
-    private static Callable<String> taskToCompleteImmediately;
-    private static Callable<String> taskThatReturnsNull;
+    // task return values
+    public static final String COMPLETED = "completed";
+    public static final String TOO_LONG = "tooLong";
+    public static final String CANCELED = "canceled";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     private static ListeningExecutorService executorService;
-
-    @BeforeClass
-    public static void init() {
-
-        taskToComplete = new Callable<String>() {
-            @Override
-            public String call() throws InterruptedException {
-                TimeUnit.MILLISECONDS.sleep(50);
-                return "complete";
-            }
-        };
-
-        taskToCompleteImmediately = new Callable<String>() {
-            @Override
-            public String call() {
-                return "completeImmediatly";
-            }
-        };
-
-        taskThatTakesTooLong = new Callable<String>() {
-            @Override
-            public String call() throws InterruptedException {
-                TimeUnit.SECONDS.sleep(5);
-                return "takesTooLong";
-            }
-        };
-
-        taskThatReturnsNull = new Callable<String>() {
-            @Override
-            public String call() throws InterruptedException {
-                return null;
-            }
-        };
-
-        taskThrowsARuntimeException = new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                throw new RuntimeException("unchecked");
-            }
-        };
-
-        taskThrowsCheckedException = new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                throw new Exception("checked");
-            }
-        };
-    }
 
     @Before
     public void setup() {
@@ -313,9 +268,10 @@ public class MoreFutures2Test {
     }
 
     @Test
+    @Ignore("Not implemented!")
     public void canelFutureOnTimeout() throws Exception {
 
-        ListenableFuture<String> pending = executorService.submit(taskThatTakesTooLong);
+        ListenableFuture<String> pending = createListenableFuture(createTimedTask(CANCELED, inMilliSeconds(5000)));
 
         List<String> strings = MoreFutures
                 .composeFuturesOf(String.class)
@@ -328,12 +284,87 @@ public class MoreFutures2Test {
         assertThat(strings.size(), is(0));
     }
 
+    /**
+     * For backward compatibility - supporting MoreFutures 1.x methods (await and aggregate)
+     */
+    @Test
+    public void timeoutTaskThatTakesTooLong() throws Exception {
+
+        List<ListenableFuture<String>> futures = Lists.newArrayList();
+
+        String expectedResult = "completed";
+
+        ListenableFuture<String> pending1 = createListenableFuture(createTimedTask(expectedResult, inMilliSeconds(5000)));
+        ListenableFuture<String> pending2 = createListenableFuture(createTimedTask(expectedResult, inMilliSeconds(0)));
+
+        futures.add(pending1);
+        futures.add(pending2);
+
+        List<String> results = MoreFutures.aggregate(futures, Duration.inMilliSeconds(50));
+
+        assertThat(results.size(), is(1));
+        assertThat(pending2.get(), equalTo(results.get(0)));
+        assertAllFutureAreComplete(futures);
+    }
+
+    @Test
+    public void removeNullValues() throws Exception {
+
+        List<ListenableFuture<String>> futures = Lists.newArrayList();
+
+        ListenableFuture<String> pending1 = createListenableFuture(createTask(null));
+        ListenableFuture<String> pending2 = createListenableFuture(createTimedTask("completeImmediatly", inMilliSeconds(0)));
+
+        futures.add(pending1);
+        futures.add(pending2);
+
+        List<String> results = MoreFutures.aggregate(futures, Duration.inMilliSeconds(50));
+
+        MatcherAssert.assertThat(results.size(), Matchers.is(1));
+        MatcherAssert.assertThat(pending2.get(), equalTo(results.get(0)));
+        assertAllFutureAreComplete(futures);
+    }
+
+    @Test
+    public void taskThatThrowsRuntimeException() throws Exception {
+
+        List<ListenableFuture<String>> futures = Lists.newArrayList();
+
+        ListenableFuture<String> pending1 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));
+        ListenableFuture<String> pending2 = createListenableFuture(createThatThrows(new Exception()));
+        ListenableFuture<String> pending3 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));;
+        ListenableFuture<String> pending4 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));;
+
+        futures.add(pending1);
+        futures.add(pending2);
+        futures.add(pending3);
+        futures.add(pending4);
+
+        List<String> results = MoreFutures.aggregate(futures, inMilliSeconds(200));
+
+        assertAllFutureAreComplete(futures);
+        assertThat(results.size(), is(3));
+    }
+
+    @Test
+    public void aggregateWithCancelledTask() throws MoreFuturesException {
+
+        List<ListenableFuture<String>> futures = new ArrayList<ListenableFuture<String>>();
+
+        ListenableFuture<String> future = createListenableFuture(createTimedTask(TOO_LONG, inMilliSeconds(5000)));
+        future.cancel(true);
+        futures.add(future);
+
+        MoreFutures.aggregate(futures, Duration.create());
+
+        assertAllFutureAreComplete(futures);
+    }
+
     @Test
     public void awaitOnFutureWithinDefaultDuration() throws MoreFuturesException {
         String expectedResult = "1";
-        int sleepTimeInSeconds = 1;
         String value = MoreFutures.await(
-                createListenableFuture(createTimedTask(expectedResult, sleepTimeInSeconds)));
+                createListenableFuture(createTimedTask(expectedResult, inMilliSeconds(1))));
 
         assertThat(value, is(expectedResult));
     }
@@ -356,10 +387,9 @@ public class MoreFutures2Test {
 
     @Test
     public void awaitOnFutureExceedingDefaultDuration() throws MoreFuturesException {
-        String expectedResult = "returnValue";
-        int sleepTimeInMilliSeconds = 8000;
 
-        ListenableFuture<String> listenableFuture = createListenableFuture(createTimedTask(expectedResult, sleepTimeInMilliSeconds));
+        ListenableFuture<String> listenableFuture =
+                createListenableFuture(createTimedTask(TOO_LONG, inMilliSeconds(8000)));
 
         // using try as need to make further assertions
         boolean thrown = false;
@@ -391,29 +421,12 @@ public class MoreFutures2Test {
     @Test
     public void awaitOrThrowWhenUncheckedExceptionIsThrown() throws MoreFuturesException {
         expectedException.expect(MoreFuturesException.class);
-        _MoreFutures.awaitOrThrow(Futures.immediateFailedFuture(new RuntimeException()), MoreFuturesException.class);
+        MoreFutures.awaitOrThrow(Futures.immediateFailedFuture(new RuntimeException()), MoreFuturesException.class);
     }
 
-
-    private Callable<String> createTask(final String returnStr) {
-        return new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return returnStr;
-            }
-        };
-    }
-
-    private Callable<String> createTimedTask(final String returnStr, final int seconds) {
-        return new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                TimeUnit.MILLISECONDS.sleep(seconds);
-                return createTask(returnStr).call();
-            }
-        };
-    }
-
+    /**
+     * Utility methods
+     */
     private <T> ListenableFuture<T> createListenableFuture(Callable<T> task) {
         return MoreExecutors.listeningDecorator(executorService).submit(task);
     }
@@ -432,7 +445,13 @@ public class MoreFutures2Test {
             expected = (MoreFuturesException) ex;
         }
 
-        MatcherAssert.assertThat(expected, Matchers.is(notNullValue()));
+        assertThat(expected, Matchers.is(notNullValue()));
         verify(pending).cancel(true);
+    }
+
+    private void assertAllFutureAreComplete(List<ListenableFuture<String>> futures) {
+        for (ListenableFuture future : futures) {
+            MatcherAssert.assertThat(future.isDone(), Matchers.is(true));
+        }
     }
 }

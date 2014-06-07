@@ -16,6 +16,7 @@ import uk.co.bbc.iplayer.common.functions.ThrowableFunction;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.util.concurrent.MoreExecutors.getExitingExecutorService;
 import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 import static uk.co.bbc.iplayer.common.concurrency.EvenMoreExecutors.boundedNamedCachedExecutorService;
@@ -38,7 +40,7 @@ public final class MoreFutures {
     }
 
     public static <T> FutureDSL<T> composeFuturesOf(Class<T> token) {
-        return new FutureDSL<T>();
+        return new FutureDSL<T>(token);
     }
 
     /**
@@ -48,6 +50,7 @@ public final class MoreFutures {
      */
     public static final class FutureDSL<T> {
 
+        private final Class<T> type;
         private Class<? extends Exception> onExceptionThrow = MoreFuturesException.class;
         private Optional<ListeningExecutorService> executorService = Optional.absent();
         private final List<Supplier<ListenableFuture<T>>> futureSuppliers = Lists.newArrayList();
@@ -55,10 +58,13 @@ public final class MoreFutures {
         private final AtomicBoolean futuresConstructed = new AtomicBoolean(false);
         private Optional<Duration> duration = Optional.absent();
 
-        // Or use caller runs policy?
+        public FutureDSL(Class<T> token) {
+            type = token;
+        }
+
         private static class DefaultExecutorServiceFactory {
-            public static final int MAX_THREAD_BOUND = (Runtime.getRuntime().availableProcessors() + 1);
-            public static final ListeningExecutorService EXECUTOR_SERVICE =
+            static final int MAX_THREAD_BOUND = (Runtime.getRuntime().availableProcessors() + 1);
+            static final ListeningExecutorService EXECUTOR_SERVICE =
                     listeningDecorator(
                             getExitingExecutorService((ThreadPoolExecutor) boundedNamedCachedExecutorService(MAX_THREAD_BOUND, "MoreFutureDefault")));
         }
@@ -83,7 +89,6 @@ public final class MoreFutures {
         }
 
         public FutureDSL<T> using(ExecutorService executorService) {
-
             this.executorService = Optional.of(
                     MoreExecutors.listeningDecorator(checkNotNull(executorService, "executor must not be null")));
 
@@ -130,6 +135,10 @@ public final class MoreFutures {
             return pipe(Futures.successfulAsList(futureList));
         }
 
+        Class<T> getTypeToken() {
+            return type;
+        }
+
         private List<ListenableFuture<T>> createFutureList() {
 
             if (!futuresConstructed.get()) {
@@ -148,35 +157,28 @@ public final class MoreFutures {
         }
     }
 
-    public static class FilterSuccessful<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
-        @Override
-        public List<T> apply(List<ListenableFuture<T>> input) throws Exception {
-            ListenableFuture<List<T>> pending = Futures.successfulAsList(input);
-            // filter nulls and return list
-            return Lists.newArrayList(filter(await(pending), notNull()));
-        }
-    }
-
-    public static class Atomic<T> implements ThrowableFunction<List<ListenableFuture<T>>, List<T>> {
-
-        private Class<? extends Exception> toThrow = MoreFuturesException.class;
-
-        public Atomic(Class<? extends Exception> toThrow) {
-            this.toThrow = toThrow;
-        }
-
-        @Override
-        public List<T> apply(List<ListenableFuture<T>> input) throws Exception {
-            ListenableFuture<List<T>> listenableFuture = Futures.allAsList(input);
-            return awaitOrThrow(listenableFuture, toThrow);
-        }
-    }
-
+    /**
+     *
+     * @param future
+     * @param <T>
+     * @return
+     */
     public static <T> PipeableFuture<T> pipe(ListenableFuture<T> future) {
         return PipeableFutureTask.create(future);
     }
 
-    public static <T, E extends Exception> T await(ListenableFuture<? extends T> future, Duration duration) throws MoreFuturesException {
+    /**
+     *
+     * @param future
+     * @param duration
+     * @param <T>
+     * @return
+     * @throws MoreFuturesException
+     */
+    public static <T> T await(ListenableFuture<? extends T> future, Duration duration) throws MoreFuturesException {
+
+        checkNotNull(future, "future must not be null");
+        checkNotNull(duration, "duration must not be null");
 
         try {
             return future.get(duration.getLength(), duration.getTimeUnit());
@@ -200,15 +202,72 @@ public final class MoreFutures {
         }
     }
 
-    public static <T, E extends Exception> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
+    /**
+     *
+     * @param future
+     * @param <T>
+     * @return
+     * @throws MoreFuturesException
+     */
+    public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
         return await(future, DEFAULT_DURATION);
     }
 
+    /**
+     *
+     * @param futures
+     * @param <T>
+     * @return
+     * @throws MoreFuturesException
+     */
     @Deprecated
-    public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout) throws MoreFuturesException {
-        throw new UnsupportedOperationException();
+    public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures) throws MoreFuturesException {
+        return aggregate(futures);
     }
 
+    /**
+     *
+     * @param futures
+     * @param timeout
+     * @param <T>
+     * @return
+     * @throws MoreFuturesException
+     */
+    @Deprecated
+    public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout) throws MoreFuturesException {
+        List<T> results = Collections.EMPTY_LIST;
+        try {
+            results = Futures.successfulAsList(futures).get(timeout.getLength(), timeout.getTimeUnit());
+        } catch (InterruptedException e) {
+            logExceptionMessage("aggregate InterruptedException", e);
+            throw new MoreFuturesException("Future interrupted", e);
+
+        } catch (ExecutionException e) {
+            logExceptionMessage("aggregate ExecutionException", e);
+            throw new MoreFuturesException("Execution exception", e);
+
+        } catch (TimeoutException e) {
+            logExceptionMessage("aggregate TimeoutException", e);
+            // Extract the successful futures and cancel futures that are stilling running
+            return filterCompleteTasks(futures);
+
+        } finally {
+            cancelActiveFutures(futures);
+            results = newArrayList(filter(results, notNull()));
+        }
+
+        return results;
+    }
+
+    /**
+     *
+     * @param future
+     * @param toThrow
+     * @param <T>
+     * @param <EX>
+     * @return
+     * @throws EX
+     */
     public static <T, EX extends Exception> T awaitOrThrow(ListenableFuture<T> future, Class<EX> toThrow) throws EX {
         try {
             return await(future, DEFAULT_DURATION);
