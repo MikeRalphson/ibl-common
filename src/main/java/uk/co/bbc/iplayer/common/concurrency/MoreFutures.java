@@ -39,8 +39,12 @@ public final class MoreFutures {
         throw new AssertionError();
     }
 
-    public static <T> FutureDSL<T> composeFuturesOf(Class<T> token) {
-        return new FutureDSL<T>(token);
+    public static <T> FutureBuilder<T> composeFuturesOf(Class<T> token) {
+        return new FutureBuilder<T>(token);
+    }
+
+    public static <T> FutureBuilder<T> composeFuturesOf() {
+        return new FutureBuilder<T>(null);
     }
 
     /**
@@ -48,7 +52,7 @@ public final class MoreFutures {
      *
      * @param <T>
      */
-    public static final class FutureDSL<T> {
+    public static final class FutureBuilder<T> {
 
         private final Class<T> type;
         private Class<? extends Exception> onExceptionThrow = MoreFuturesException.class;
@@ -58,7 +62,7 @@ public final class MoreFutures {
         private final AtomicBoolean futuresConstructed = new AtomicBoolean(false);
         private Optional<Duration> duration = Optional.absent();
 
-        public FutureDSL(Class<T> token) {
+        public FutureBuilder(Class<T> token) {
             type = token;
         }
 
@@ -69,7 +73,7 @@ public final class MoreFutures {
                             getExitingExecutorService((ThreadPoolExecutor) boundedNamedCachedExecutorService(MAX_THREAD_BOUND, "MoreFutureDefault")));
         }
 
-        public FutureDSL<T> createFuture(final Callable<T> task) {
+        public FutureBuilder<T> createFuture(final Callable<T> task) {
             checkNotNull(task);
             futureSuppliers.add(new Supplier<ListenableFuture<T>>() {
                 @Override
@@ -80,7 +84,7 @@ public final class MoreFutures {
             return this;
         }
 
-        public FutureDSL<T> createFutures(Collection<Callable<T>> collection) {
+        public FutureBuilder<T> createFutures(Collection<Callable<T>> collection) {
             checkNotNull(collection);
             for (Callable<T> callable : collection) {
                 createFuture(callable);
@@ -88,29 +92,28 @@ public final class MoreFutures {
             return this;
         }
 
-        public FutureDSL<T> using(ExecutorService executorService) {
+        public FutureBuilder<T> using(ExecutorService executorService) {
             this.executorService = Optional.of(
                     MoreExecutors.listeningDecorator(checkNotNull(executorService, "executor must not be null")));
-
             return this;
         }
 
-        public <E extends Exception> FutureDSL<T> onExceptionThrow(Class<E> toThrow) {
+        public <E extends Exception> FutureBuilder<T> onExceptionThrow(Class<E> toThrow) {
             this.onExceptionThrow = toThrow;
             return this;
         }
 
-        public <E extends Exception> FutureDSL<T> duration(Duration duration) {
+        public FutureBuilder<T> duration(Duration duration) {
             this.duration = Optional.of(duration);
             return this;
         }
 
-        public FutureDSL<T> addFuture(final ListenableFuture<T> future) {
+        public FutureBuilder<T> addFuture(final ListenableFuture<T> future) {
             futureSuppliers.add(Suppliers.ofInstance(future));
             return this;
         }
 
-        public FutureDSL<T> addAllFutures(Collection<ListenableFuture<T>> collection) {
+        public FutureBuilder<T> addAllFutures(Collection<ListenableFuture<T>> collection) {
             checkNotNull(collection);
             for (ListenableFuture<T> callable : collection) {
                 addFuture(callable);
@@ -118,16 +121,16 @@ public final class MoreFutures {
             return this;
         }
 
-        public List<T> aggregateAndTransform(ThrowableFunction<List<ListenableFuture<T>>, List<T>> aggregator) throws Exception {
+        public List<T> aggregate(ThrowableFunction<List<ListenableFuture<T>>, List<T>> aggregator) throws Exception {
             return aggregator.apply(createFutureList());
         }
 
-        <S> S aggregateAndTransform(ThrowableFunction<List<T>, S> function) throws Exception {
+        <S> S aggregate(ThrowableFunction<List<T>, S> function) throws Exception {
             return function.apply(aggregate());
         }
 
         public List<T> aggregate() throws Exception {
-            return aggregateAndTransform(new Atomic<T>(onExceptionThrow));
+            return aggregate(new Atomic<T>(onExceptionThrow));
         }
 
         public PipeableFuture<List<T>> asFuture() throws Exception {
@@ -159,7 +162,7 @@ public final class MoreFutures {
 
     /**
      *
-     * @param future
+     * @param future - ListenableFuture
      * @param <T>
      * @return
      */
@@ -220,7 +223,6 @@ public final class MoreFutures {
      * @return
      * @throws MoreFuturesException
      */
-    @Deprecated
     public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures) throws MoreFuturesException {
         return aggregate(futures);
     }
@@ -233,7 +235,6 @@ public final class MoreFutures {
      * @return
      * @throws MoreFuturesException
      */
-    @Deprecated
     public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout) throws MoreFuturesException {
         List<T> results = Collections.EMPTY_LIST;
         try {

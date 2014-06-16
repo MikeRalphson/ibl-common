@@ -1,16 +1,15 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+
+import java.util.concurrent.*;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by spragn01 on 26/03/2014.
  */
-public class ForwardingFutureTask<V> implements Future<V> {
+public class ForwardingFutureTask<V> implements ListenableFuture<V> {
 
     private ListenableFuture<V> delegate;
 
@@ -46,5 +45,10 @@ public class ForwardingFutureTask<V> implements Future<V> {
 
     public ListenableFuture<V> getDelegate() {
         return delegate;
+    }
+
+    @Override
+    public void addListener(Runnable runnable, Executor executor) {
+        delegate.addListener(runnable, executor);
     }
 }

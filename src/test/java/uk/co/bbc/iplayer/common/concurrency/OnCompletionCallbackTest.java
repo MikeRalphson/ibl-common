@@ -14,6 +14,7 @@ import static com.google.common.util.concurrent.Futures.addCallback;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createTask;
+import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createThatThrows;
 
 public class OnCompletionCallbackTest {
 
@@ -44,6 +45,26 @@ public class OnCompletionCallbackTest {
         });
 
         pending.get();
+        assertThat(taskCompleted, is(true));
+    }
+
+    @Test
+    public void verifyFlagUpdateOnCompletationWhenExceptionThrown() throws ExecutionException, InterruptedException {
+
+        ListenableFuture<String> pending = executorService.submit(createThatThrows(new Exception()));
+
+        addCallback(pending, new OnCompletionCallback<String>() {
+            @Override
+            public void onCompletion() {
+                taskCompleted = true;
+            }
+        });
+
+        try {
+            pending.get();
+        } catch (ExecutionException e) {
+            // chill out, don't care for this test
+        }
         assertThat(taskCompleted, is(true));
     }
 }

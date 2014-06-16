@@ -64,13 +64,13 @@ public class _MoreFutures {
         try {
             results = Futures.successfulAsList(futures).get(timeout.getLength(), timeout.getTimeUnit());
         } catch (InterruptedException e) {
-            log("aggregateAndTransform InterruptedException", e);
+            log("aggregate InterruptedException", e);
             throw new MoreFuturesException("Future interrupted", e);
         } catch (ExecutionException e) {
-            log("aggregateAndTransform ExecutionException", e);
+            log("aggregate ExecutionException", e);
             throw new MoreFuturesException("Execution exception", e);
         } catch (TimeoutException e) {
-            log("aggregateAndTransform TimeoutException", e);
+            log("aggregate TimeoutException", e);
             // Extract the successful futures and cancel futures that are stilling running
             return filterCompleteTasks(futures);
         } finally {

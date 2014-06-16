@@ -3,6 +3,7 @@ package uk.co.bbc.iplayer.common.concurrency;
 import java.util.concurrent.TimeUnit;
 
 public class Duration {
+
     private final TimeUnit timeUnit;
     private final long length;
     private final static long DEFAULT_MILLISECONDS = 5000;
@@ -30,7 +31,13 @@ public class Duration {
         return new Duration();
     }
 
+    // TODO: newInstance & getInstance
     public static Duration inMilliSeconds(int i) {
         return new Duration(TimeUnit.MILLISECONDS, i);
     }
+
+    // TODO
+    //public static Duration inSeconds(int i) {
+    //    return new Duration(TimeUnit.SECONDS, i);
+    //}
 }

@@ -23,19 +23,14 @@ import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.co.bbc.iplayer.common.concurrency.Duration.*;
-import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createTask;
-import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createThatThrows;
-import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.createTimedTask;
+import static org.mockito.Mockito.*;
+import static uk.co.bbc.iplayer.common.concurrency.Duration.inMilliSeconds;
+import static uk.co.bbc.iplayer.common.concurrency.TaskFactory.*;
 
 public class MoreFuturesTest {
 
@@ -105,7 +100,7 @@ public class MoreFuturesTest {
                 .composeFuturesOf(String.class)
                     .createFutures(newArrayList(createTask("I"), createTask("II"), createTask("III")))
                     .using(executorService)
-                    .aggregateAndTransform(new ThrowableFunction<List<String>, Integer>() {
+                    .aggregate(new ThrowableFunction<List<String>, Integer>() {
                         @Override
                         public Integer apply(List<String> input) throws Exception {
                             String max = Collections.max(input);
@@ -123,7 +118,7 @@ public class MoreFuturesTest {
                 .composeFuturesOf(String.class)
                     .createFutures(newArrayList(createTask("I"), createTask("II"), createTask("III")))
                     .using(executorService)
-                    .aggregateAndTransform(new ThrowableFunction<List<String>, List<Integer>>() {
+                    .aggregate(new ThrowableFunction<List<String>, List<Integer>>() {
                         @Override
                         public List<Integer> apply(List<String> input) throws Exception {
                             List<Integer> integers = Lists.newArrayList();
@@ -276,9 +271,9 @@ public class MoreFuturesTest {
         List<String> strings = MoreFutures
                 .composeFuturesOf(String.class)
                     .addFuture(pending)
-                // TODO
+                    // TODO
                     .duration(inMilliSeconds(1))
-                .aggregateAndTransform(new MoreFutures.FilterSuccessful<String>());
+                .aggregate(new FilterSuccessful<String>());
 
         assertThat(pending.isDone(), is(true));
         assertThat(strings.size(), is(0));
