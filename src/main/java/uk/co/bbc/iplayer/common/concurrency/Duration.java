@@ -31,13 +31,11 @@ public class Duration {
         return new Duration();
     }
 
-    // TODO: newInstance & getInstance
     public static Duration inMilliSeconds(int i) {
         return new Duration(TimeUnit.MILLISECONDS, i);
     }
 
-    // TODO
-    //public static Duration inSeconds(int i) {
-    //    return new Duration(TimeUnit.SECONDS, i);
-    //}
+    public static Duration inSeconds(int i) {
+        return new Duration(TimeUnit.SECONDS, i);
+    }
 }

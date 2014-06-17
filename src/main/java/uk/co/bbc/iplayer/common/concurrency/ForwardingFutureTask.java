@@ -6,9 +6,6 @@ import java.util.concurrent.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Created by spragn01 on 26/03/2014.
- */
 public class ForwardingFutureTask<V> implements ListenableFuture<V> {
 
     private ListenableFuture<V> delegate;
