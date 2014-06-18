@@ -7,6 +7,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import javax.annotation.Nonnull;
 
+import static com.google.common.util.concurrent.Futures.transform;
+
 public final class PipeableFutureTask<V> extends ForwardingFutureTask<V> implements PipeableFuture<V> {
 
     public static <V> PipeableFuture<V> create(ListenableFuture<V> delegate) {
@@ -20,12 +22,11 @@ public final class PipeableFutureTask<V> extends ForwardingFutureTask<V> impleme
     @Override
     public <O> PipeableFuture<O> to(@Nonnull final Function<V, O> function) {
         return create(
-                Futures.transform(getDelegate(), new AsyncFunction<V, O>() {
+                transform(getDelegate(), new AsyncFunction<V, O>() {
                     @Override
                     public ListenableFuture<O> apply(V input) throws Exception {
                         return Futures.immediateFuture(function.apply(input));
                     }
-                })
-        );
+                }));
     }
 }
