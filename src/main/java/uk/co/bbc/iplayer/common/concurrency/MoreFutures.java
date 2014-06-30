@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
+import static uk.co.bbc.iplayer.common.concurrency.Duration.inMilliSeconds;
 
 /**
  * Patch for 'aggregated futures' (called within Guava's successfulAsList) that never return by enforcing timeout.
@@ -30,10 +31,10 @@ public class MoreFutures {
         throw new AssertionError();
     }
 
-    public static <T> T await(ListenableFuture<? extends T> future, Duration timeOutCriteria) throws MoreFuturesException {
+    public static <T> T await(ListenableFuture<? extends T> future, Duration duration) throws MoreFuturesException {
 
         try {
-            return future.get(timeOutCriteria.getLength(), timeOutCriteria.getTimeUnit());
+            return future.get(duration.getLength(), duration.getTimeUnit());
 
         } catch (InterruptedException e) {
             log("await", e);
@@ -44,7 +45,11 @@ public class MoreFutures {
             throw new MoreFuturesException("Future Execution Exception", e);
         } catch (TimeoutException e) {
             log("await", e);
-            throw new MoreFuturesException("Timed out", e);
+            if (future instanceof IdentifyingFuture) {
+                throw new MoreFuturesException("Timed out: " + ((IdentifyingFuture) future).getDescriptor(), e);
+            }
+
+            throw new MoreFuturesException("Timed out" + future.toString(), e);
         } finally {
             if (!future.isDone()) {
                 future.cancel(INTERRUPT_TASK);
@@ -105,7 +110,7 @@ public class MoreFutures {
             if (future.isDone() && !future.isCancelled()) {
                 T value = null;
                 try {
-                    value = MoreFutures.await(future, Duration.inMilliSeconds(10));
+                    value = MoreFutures.await(future, inMilliSeconds(10));
                 } catch (MoreFuturesException moreFuturesException) {
                     log("filterCompleteTasks", moreFuturesException);
                 }

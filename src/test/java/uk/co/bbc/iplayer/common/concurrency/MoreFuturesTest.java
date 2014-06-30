@@ -188,7 +188,10 @@ public class MoreFuturesTest {
 
     private void verifyCancelledAndExceptionThrown(Exception exception) throws InterruptedException, ExecutionException, TimeoutException {
         ListenableFuture<String> future = mock(ListenableFuture.class);
-        when(future.get(anyLong(), any(TimeUnit.class))).thenThrow(exception);
+
+        when(future.get(anyLong(), any(TimeUnit.class)))
+                .thenThrow(exception);
+
         MoreFuturesException expected = null;
         try {
             MoreFutures.await(future, Duration.create());
