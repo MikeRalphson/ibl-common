@@ -43,16 +43,15 @@ public class EvenMoreExecutors {
         return threadPoolExecutor;
     }
 
-    public static ExecutorService boundedNamedCachedExecutorService(int maxThreadBound, String poolName) {
-        return boundedNamedCachedExecutorService(maxThreadBound, poolName, DEFAULT_KEEP_ALIVE);
+    public static ExecutorService boundedNamedCachedExecutorService(int maxThreadBound, String poolName, int queueSize, RejectedExecutionHandler abortPolicy) {
+        return boundedNamedCachedExecutorService(maxThreadBound, poolName, DEFAULT_KEEP_ALIVE, queueSize, abortPolicy);
     }
 
     // Added parameter to allow testing
-    public static ExecutorService boundedNamedCachedExecutorService(int maxThreadBound, String poolName, long keepalive) {
+    static ExecutorService boundedNamedCachedExecutorService(int maxThreadBound, String poolName, long keepalive, int queueSize, RejectedExecutionHandler abortPolicy) {
 
         ThreadFactory threadFactory = new NamedThreadFactory(poolName);
-        LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
-        RejectedExecutionHandler abortPolicy = new ThreadPoolExecutor.AbortPolicy();
+        LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(queueSize);
 
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 maxThreadBound,
