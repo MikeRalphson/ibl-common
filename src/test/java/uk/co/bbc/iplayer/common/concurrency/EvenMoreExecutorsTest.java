@@ -1,19 +1,24 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class EvenMoreExecutorsTest {
 
     public static final int THREADS = 10;
+    @Mock
+    private RejectedExecutionHandler rejectedExecutionHandler;
 
     @Test
     public void createCustomFixedExecutor() {
@@ -32,11 +37,22 @@ public class EvenMoreExecutorsTest {
 
     @Test
     public void boundedNameCachedTerminatesAfterKeepAlive() throws InterruptedException {
+        testBoundedNameCache(100);
+        verifyNoMoreInteractions(rejectedExecutionHandler);
+    }
+
+    @Test
+    public void boundedNameCachedThrowsExceptionIfQueueIsFilled() throws InterruptedException {
+        testBoundedNameCache(10);
+        verify(rejectedExecutionHandler, atLeastOnce()).rejectedExecution(isA(Runnable.class), isA(ThreadPoolExecutor.class));
+    }
+
+    public void testBoundedNameCache(int queueSize) throws InterruptedException {
         long keepalive = 3;
         int nThreads = 5;
-        ExecutorService executorService = EvenMoreExecutors.boundedNamedCachedExecutorService(nThreads, "TEST-POOL", keepalive);
+        ExecutorService executorService = EvenMoreExecutors.boundedNamedCachedExecutorService(nThreads, "TEST-POOL", keepalive, queueSize, rejectedExecutionHandler);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             executorService.submit(new Callable<Void>() {
 
                 @Override
@@ -58,7 +74,7 @@ public class EvenMoreExecutorsTest {
         int nThreads = 5;
 
         // keepalive 1 min
-        ExecutorService executorService = EvenMoreExecutors.boundedNamedCachedExecutorService(nThreads, "TEST-POOL");
+        ExecutorService executorService = EvenMoreExecutors.boundedNamedCachedExecutorService(nThreads, "TEST-POOL", 3, 11, rejectedExecutionHandler);
 
         for (int i = 0; i < 10; i++) {
             executorService.submit(new Callable<Void>() {
@@ -74,5 +90,6 @@ public class EvenMoreExecutorsTest {
         int count = NamedThread.getThreadsAlive();
         assertThat(count, is(nThreads));
         executorService.shutdown();
+        verifyNoMoreInteractions(rejectedExecutionHandler);
     }
 }
