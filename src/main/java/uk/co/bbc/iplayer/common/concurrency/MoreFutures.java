@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
+import static uk.co.bbc.iplayer.common.concurrency.Duration.inMilliSeconds;
 
 public final class MoreFutures {
 
@@ -51,8 +52,12 @@ public final class MoreFutures {
 
         } catch (TimeoutException e) {
             logExceptionMessage("await timeout", e);
-            throw new MoreFuturesException("Timed out", e);
+            
+            if (future instanceof IdentifyingFuture) {
+                throw new MoreFuturesException("Timed out: " + ((IdentifyingFuture) future).getDescriptor(), e);
+            }
 
+            throw new MoreFuturesException("Timed out" + future.toString(), e);
         } finally {
             if (!future.isDone()) {
                 future.cancel(INTERRUPT_TASK);
@@ -91,6 +96,31 @@ public final class MoreFutures {
         }
 
         return results;
+    }
+
+    private static void log(String method, Exception e) {
+        if (LOG.isWarnEnabled()) {
+            LOG.warn(method + "," + ExceptionUtils.getFullStackTrace(e));
+        }
+    }
+
+    private static <T> List<T> filterCompleteTasks(Iterable<? extends ListenableFuture<? extends T>> futures) {
+
+        List<T> completedTasks = Lists.newArrayList();
+        for (ListenableFuture<? extends T> future : futures) {
+            // completed and has not been terminated
+            if (future.isDone() && !future.isCancelled()) {
+                T value = null;
+                try {
+                    value = MoreFutures.await(future, inMilliSeconds(10));
+                } catch (MoreFuturesException moreFuturesException) {
+                    log("filterCompleteTasks", moreFuturesException);
+                }
+                completedTasks.add(value);
+            }
+        }
+
+        return completedTasks;
     }
 
     public static <T, EX extends Exception> T awaitOrThrow(ListenableFuture<T> future, Class<EX> toThrow) throws EX {
@@ -149,24 +179,5 @@ public final class MoreFutures {
                 }
             }
         }
-    }
-
-    private static <T> List<T> filterCompleteTasks(Iterable<? extends ListenableFuture<? extends T>> futures) {
-
-        List<T> completedTasks = Lists.newArrayList();
-        for (ListenableFuture<? extends T> future : futures) {
-            // completed and has not been terminated
-            if (future.isDone() && !future.isCancelled()) {
-                T value = null;
-                try {
-                    value = MoreFutures.await(future);
-                } catch (MoreFuturesException moreFuturesException) {
-                    logExceptionMessage("filterCompleteTasks", moreFuturesException);
-                }
-                completedTasks.add(value);
-            }
-        }
-
-        return completedTasks;
     }
 }

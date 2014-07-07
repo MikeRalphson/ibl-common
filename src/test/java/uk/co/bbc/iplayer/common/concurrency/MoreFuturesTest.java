@@ -268,6 +268,11 @@ public class MoreFuturesTest {
         when(pending.get(anyLong(), any(TimeUnit.class)))
                 .thenThrow(exception);
 
+        ListenableFuture<String> future = mock(ListenableFuture.class);
+
+        when(future.get(anyLong(), any(TimeUnit.class)))
+                .thenThrow(exception);
+
         MoreFuturesException expected = null;
         try {
             MoreFutures.await(pending);
