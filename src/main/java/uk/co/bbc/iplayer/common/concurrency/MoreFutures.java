@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
+import static uk.co.bbc.iplayer.common.concurrency.Duration.inMilliSeconds;
 
 public final class MoreFutures {
 
@@ -103,17 +104,6 @@ public final class MoreFutures {
         }
     }
 
-    private static <T> void cancelActiveFutures(final Iterable<? extends ListenableFuture<? extends T>> futures) {
-
-        synchronized (futures) {
-            for (ListenableFuture future : futures) {
-                if (!future.isDone()) {
-                    future.cancel(INTERRUPT_TASK);
-                }
-            }
-        }
-    }
-
     private static <T> List<T> filterCompleteTasks(Iterable<? extends ListenableFuture<? extends T>> futures) {
 
         List<T> completedTasks = Lists.newArrayList();
@@ -189,24 +179,5 @@ public final class MoreFutures {
                 }
             }
         }
-    }
-
-    private static <T> List<T> filterCompleteTasks(Iterable<? extends ListenableFuture<? extends T>> futures) {
-
-        List<T> completedTasks = Lists.newArrayList();
-        for (ListenableFuture<? extends T> future : futures) {
-            // completed and has not been terminated
-            if (future.isDone() && !future.isCancelled()) {
-                T value = null;
-                try {
-                    value = MoreFutures.await(future);
-                } catch (MoreFuturesException moreFuturesException) {
-                    logExceptionMessage("filterCompleteTasks", moreFuturesException);
-                }
-                completedTasks.add(value);
-            }
-        }
-
-        return completedTasks;
     }
 }
