@@ -36,4 +36,13 @@ public final class TaskFactory {
             }
         };
     }
+
+    public static Runnable createNoOpRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                // do nothing
+            }
+        };
+    }
 }

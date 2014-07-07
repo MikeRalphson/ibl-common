@@ -1,10 +1,14 @@
 package uk.co.bbc.iplayer.common.utils;
 
-import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.bbc.iplayer.common.concurrency.NamedThreadFactory;
+
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ThreadPoolConfig {
 
@@ -16,7 +20,7 @@ public class ThreadPoolConfig {
 
     public static PoolConfig getConfig(ExecutorService executorService) {
 
-        Preconditions.checkNotNull(executorService);
+        checkNotNull(executorService);
 
         if (executorService instanceof ThreadPoolExecutor) {
             return getConfig((ThreadPoolExecutor) executorService);
@@ -35,6 +39,7 @@ public class ThreadPoolConfig {
         private final int maxSize;
         private final long taskCount;
         private final int workQueueSize;
+        private String poolName;
 
         public PoolConfig(ThreadPoolExecutor executor) {
             this.corePoolSize = executor.getCorePoolSize();
@@ -45,6 +50,12 @@ public class ThreadPoolConfig {
             this.maxSize = executor.getMaximumPoolSize();
             this.taskCount = executor.getTaskCount();
             this.workQueueSize = executor.getQueue().size();
+            this.poolName = executor.toString();
+
+            ThreadFactory threadFactory = executor.getThreadFactory();
+            if (threadFactory instanceof NamedThreadFactory) {
+                this.poolName = ((NamedThreadFactory) threadFactory).getName();
+            }
         }
 
         public int getCorePoolSize() {
@@ -77,6 +88,10 @@ public class ThreadPoolConfig {
 
         public long getTaskCount() {
             return taskCount;
+        }
+
+        public String getPoolName() {
+            return poolName;
         }
 
         @Override
