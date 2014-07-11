@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -252,6 +253,24 @@ public class MoreFuturesTest {
     public void awaitOrThrowWhenUncheckedExceptionIsThrown() throws MoreFuturesException {
         expectedException.expect(MoreFuturesException.class);
         MoreFutures.awaitOrThrow(Futures.immediateFailedFuture(new RuntimeException()), MoreFuturesException.class);
+    }
+
+    @Test
+    public void shouldKeepDescription_WhenFutureTransformed() throws Exception {
+        ListenableFuture<String> delegate = immediateFuture(" listenable future ");
+        IdentifyingFuture<String> originalFuture = new IdentifyingFuture<String>(delegate, "original description");
+
+        Function<String, String> function = new CheckedFunction<String, String>("trimming function") {
+            @Override
+            public String checkedApply(String s) {
+                return s.trim();
+            }
+        };
+
+        IdentifyingFuture<String> transformedFuture = MoreFutures.transformIdentifying(originalFuture, function);
+
+        assertThat(transformedFuture.getDescriptor(), is(originalFuture.getDescriptor()));
+        assertThat(transformedFuture.get(), is("listenable future"));
     }
 
     /**

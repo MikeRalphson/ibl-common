@@ -1,8 +1,10 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +69,12 @@ public final class MoreFutures {
 
     public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
         return await(future, DEFAULT_DURATION);
+    }
+
+    public static <I, O> IdentifyingFuture<O> transformIdentifying(IdentifyingFuture<I> input,
+                                                       final Function<? super I, ? extends O> function) {
+        ListenableFuture<O> transformedFuture = Futures.transform(input, function, MoreExecutors.sameThreadExecutor());
+        return new IdentifyingFuture<O>(transformedFuture, input.getDescriptor());
     }
 
     public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures) throws MoreFuturesException {
