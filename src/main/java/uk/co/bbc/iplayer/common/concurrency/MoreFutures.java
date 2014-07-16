@@ -45,13 +45,13 @@ public final class MoreFutures {
             return future.get(duration.getLength(), duration.getTimeUnit());
 
         } catch (InterruptedException e) {
-            return handleException(future, e, "interrupted");
+            return handleException(future, e, "Interrupted");
 
         } catch (ExecutionException e) {
             return handleException(future, e, "Execution Exception");
 
         } catch (TimeoutException e) {
-            return handleException(future, e, "timed out");
+            return handleException(future, e, "Timed out");
         } finally {
             if (!future.isDone()) {
                 future.cancel(INTERRUPT_TASK);
@@ -63,7 +63,7 @@ public final class MoreFutures {
         logExceptionMessage("await " + message, e);
 
         if (future instanceof IdentifyingFuture) {
-            throw new MoreFuturesException(message + ((IdentifyingFuture)future).getDescriptor(), e);
+            throw new MoreFuturesException(message + ": " + ((IdentifyingFuture)future).getDescriptor(), e);
         }
 
         throw new MoreFuturesException(message + future.toString(), e);
