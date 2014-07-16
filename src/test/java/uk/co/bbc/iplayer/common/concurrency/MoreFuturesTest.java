@@ -256,7 +256,7 @@ public class MoreFuturesTest {
     }
 
     @Test
-    public void shouldKeepDescription_WhenFutureTransformed() throws Exception {
+    public void shouldKeepDescription_WhenIdentifyingFutureTransformed() throws Exception {
         ListenableFuture<String> delegate = immediateFuture(" listenable future ");
         IdentifyingFuture<String> originalFuture = new IdentifyingFuture<String>(delegate, "original description");
 
@@ -267,9 +267,9 @@ public class MoreFuturesTest {
             }
         };
 
-        IdentifyingFuture<String> transformedFuture = MoreFutures.transformIdentifying(originalFuture, function);
+        ListenableFuture<String> transformedFuture = MoreFutures.transformIdentifying(originalFuture, function);
 
-        assertThat(transformedFuture.getDescriptor(), is(originalFuture.getDescriptor()));
+        assertThat(((IdentifyingFuture)transformedFuture).getDescriptor(), is(originalFuture.getDescriptor()));
         assertThat(transformedFuture.get(), is("listenable future"));
     }
 
