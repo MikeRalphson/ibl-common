@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.timgroup.statsd.StatsDClient;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -258,7 +259,7 @@ public class MoreFuturesTest {
     @Test
     public void shouldKeepDescription_WhenIdentifyingFutureTransformed() throws Exception {
         ListenableFuture<String> delegate = immediateFuture(" listenable future ");
-        IdentifyingFuture<String> originalFuture = new IdentifyingFuture<String>(delegate, "original description");
+        IdentifyingFuture<String> originalFuture = new IdentifyingFuture<String>(delegate, "original description", mock(StatsDClient.class), "statsDescriptor");
 
         Function<String, String> function = new CheckedFunction<String, String>("trimming function") {
             @Override

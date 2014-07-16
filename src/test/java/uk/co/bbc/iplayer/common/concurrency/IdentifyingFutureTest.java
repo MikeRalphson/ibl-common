@@ -2,6 +2,7 @@ package uk.co.bbc.iplayer.common.concurrency;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.timgroup.statsd.StatsDClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,6 +34,8 @@ public class IdentifyingFutureTest {
 
     @Mock
     private ListenableFuture<String> mockedDelegateFuture;
+    @Mock
+    private StatsDClient statsDClient;
 
     private ListenableFuture<String> unitWithMockedFuture;
     private ListeningExecutorService executorService;
@@ -47,7 +50,7 @@ public class IdentifyingFutureTest {
                 .thenReturn("done");
 
         executorService = listeningDecorator(Executors.newFixedThreadPool(2));
-        unitWithMockedFuture = new IdentifyingFuture<String>(mockedDelegateFuture, "descriptor");
+        unitWithMockedFuture = new IdentifyingFuture<String>(mockedDelegateFuture, "descriptor", statsDClient, "statsDescriptor");
     }
 
     @After
@@ -70,7 +73,7 @@ public class IdentifyingFutureTest {
             }
         });
 
-        IdentifyingFuture<String> decorated = new IdentifyingFuture<String>(future, descriptor);
+        IdentifyingFuture<String> decorated = new IdentifyingFuture<String>(future, descriptor, statsDClient, "statsDescriptor");
         await(decorated, inMilliSeconds(1000));
     }
 
