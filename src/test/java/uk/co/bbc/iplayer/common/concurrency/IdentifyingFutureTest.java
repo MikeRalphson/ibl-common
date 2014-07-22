@@ -2,7 +2,6 @@ package uk.co.bbc.iplayer.common.concurrency;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.timgroup.statsd.StatsDClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,10 +17,7 @@ import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.co.bbc.iplayer.common.concurrency.Duration.inMilliSeconds;
 import static uk.co.bbc.iplayer.common.concurrency.ExecutorServiceUtil.shutdownQuietly;
 import static uk.co.bbc.iplayer.common.concurrency.MoreFutures.await;
@@ -31,11 +27,8 @@ public class IdentifyingFutureTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
     private ListenableFuture<String> mockedDelegateFuture;
-    @Mock
-    private StatsDClient statsDClient;
 
     private ListenableFuture<String> unitWithMockedFuture;
     private ListeningExecutorService executorService;
@@ -50,7 +43,7 @@ public class IdentifyingFutureTest {
                 .thenReturn("done");
 
         executorService = listeningDecorator(Executors.newFixedThreadPool(2));
-        unitWithMockedFuture = new IdentifyingFuture<String>(mockedDelegateFuture, "descriptor", statsDClient, "statsDescriptor");
+        unitWithMockedFuture = new IdentifyingFuture<String>(mockedDelegateFuture, "descriptor", "statsDescriptor");
     }
 
     @After
@@ -73,7 +66,7 @@ public class IdentifyingFutureTest {
             }
         });
 
-        IdentifyingFuture<String> decorated = new IdentifyingFuture<String>(future, descriptor, statsDClient, "statsDescriptor");
+        IdentifyingFuture<String> decorated = new IdentifyingFuture<String>(future, descriptor, "statsDescriptor");
         await(decorated, inMilliSeconds(1000));
     }
 

@@ -2,6 +2,8 @@ package uk.co.bbc.iplayer.common.concurrency;
 
 public class MoreFuturesException extends Exception {
 
+    private IdentifyingFuture identifyingFuture;
+
     public MoreFuturesException() {
     }
 
@@ -15,5 +17,18 @@ public class MoreFuturesException extends Exception {
 
     public MoreFuturesException(Throwable throwable) {
         super(throwable);
+    }
+
+    public MoreFuturesException(String message, Throwable throwable, IdentifyingFuture identifyingFuture) {
+        super(message, throwable);
+        this.identifyingFuture = identifyingFuture;
+    }
+
+    public boolean hasIdentifyingFuture(){
+        return identifyingFuture != null;
+    }
+
+    public IdentifyingFuture getIdentifyingFuture() {
+        return identifyingFuture;
     }
 }

@@ -63,10 +63,7 @@ public final class MoreFutures {
         logExceptionMessage("await " + message, e);
 
         if (future instanceof IdentifyingFuture) {
-            IdentifyingFuture identifyingFuture = (IdentifyingFuture) future;
-            LOG.error("Future failed to complete: " + identifyingFuture.getDescriptor());
-            identifyingFuture.getStatsDClient().increment(identifyingFuture.getStatsDescriptor());
-            throw new MoreFuturesException(message + ": " + identifyingFuture.getDescriptor(), e);
+            throw new MoreFuturesException(message + ": " + ((IdentifyingFuture) future).getDescriptor(), e, (IdentifyingFuture) future);
         }
 
         throw new MoreFuturesException(message + future.toString(), e);
@@ -77,12 +74,12 @@ public final class MoreFutures {
     }
 
     public static <I, O> ListenableFuture<O> transformIdentifying(ListenableFuture<I> input,
-                                                       final Function<? super I, ? extends O> function) {
+                                                                  final Function<? super I, ? extends O> function) {
         ListenableFuture<O> transformedFuture = Futures.transform(input, function, MoreExecutors.sameThreadExecutor());
 
-        if(input instanceof IdentifyingFuture) {
+        if (input instanceof IdentifyingFuture) {
             IdentifyingFuture identifying = (IdentifyingFuture) input;
-            return new IdentifyingFuture<O>(transformedFuture, identifying.getDescriptor(), identifying.getStatsDClient(), identifying.getStatsDescriptor());
+            return new IdentifyingFuture<O>(transformedFuture, identifying.getDescriptor(), identifying.getStatsDescriptor());
         }
 
         return transformedFuture;
