@@ -65,7 +65,7 @@ public final class MoreFutures {
         if (future instanceof IdentifyingFuture) {
             IdentifyingFuture identifyingFuture = (IdentifyingFuture) future;
             LOG.error("Future failed to complete: " + identifyingFuture.getDescriptor());
-            identifyingFuture.getStatsDClient().increment("exception." + identifyingFuture.getStatsDescriptor() + exceptionDescription.toLowerCase().replace(" ", ""));
+            identifyingFuture.getStatsDClient().increment("exception." + identifyingFuture.getStatsDescriptor() + "." + exceptionDescription.toLowerCase().replace(" ", ""));
             throw new MoreFuturesException(exceptionDescription + ": " + identifyingFuture.getDescriptor(), e);
         }
 
