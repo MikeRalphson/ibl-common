@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.timgroup.statsd.StatsDClient;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -14,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,12 +85,12 @@ public class MoreFuturesTest {
 
         PipeableFuture<String> pipeableFuture = MoreFutures
                 .pipe(future)
-                .to(new Function<Boolean, String>() {
-                    @Override
-                    public String apply(Boolean input) {
-                        return input.toString();
-                    }
-                });
+                    .to(new Function<Boolean, String>() {
+                        @Override
+                        public String apply(Boolean input) {
+                            return input.toString();
+                        }
+                    });
 
         String result = pipeableFuture.get();
 
@@ -104,9 +106,9 @@ public class MoreFuturesTest {
 
         PipeableFuture<Map<String, Integer>> pipeableFuture = MoreFutures
                 .pipe(future)
-                .to(new StringToASCII())
-                .to(new ASCIIToString())
-                .to(new CreateStringLengthMap());
+                    .to(new StringToASCII())
+                    .to(new ASCIIToString())
+                    .to(new CreateStringLengthMap());
 
         Map<String, Integer> stringIntegerMap = pipeableFuture.get();
 
@@ -162,10 +164,8 @@ public class MoreFuturesTest {
 
         ListenableFuture<String> pending1 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));
         ListenableFuture<String> pending2 = createListenableFuture(createThatThrows(new Exception()));
-        ListenableFuture<String> pending3 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));
-        ;
-        ListenableFuture<String> pending4 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));
-        ;
+        ListenableFuture<String> pending3 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));;
+        ListenableFuture<String> pending4 = createListenableFuture(createTimedTask(COMPLETED, inMilliSeconds(50)));;
 
         futures.add(pending1);
         futures.add(pending2);
@@ -259,7 +259,7 @@ public class MoreFuturesTest {
     @Test
     public void shouldKeepDescription_WhenIdentifyingFutureTransformed() throws Exception {
         ListenableFuture<String> delegate = immediateFuture(" listenable future ");
-        IdentifyingFuture<String> originalFuture = new IdentifyingFuture<String>(delegate, "original description", "statsDescriptor");
+        IdentifyingFuture<String> originalFuture = new IdentifyingFuture<String>(delegate, "original description", mock(StatsDClient.class), "statsDescriptor");
 
         Function<String, String> function = new CheckedFunction<String, String>("trimming function") {
             @Override
@@ -270,7 +270,7 @@ public class MoreFuturesTest {
 
         ListenableFuture<String> transformedFuture = MoreFutures.transformIdentifying(originalFuture, function);
 
-        assertThat(((IdentifyingFuture) transformedFuture).getDescriptor(), is(originalFuture.getDescriptor()));
+        assertThat(((IdentifyingFuture)transformedFuture).getDescriptor(), is(originalFuture.getDescriptor()));
         assertThat(transformedFuture.get(), is("listenable future"));
     }
 

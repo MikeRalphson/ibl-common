@@ -51,7 +51,7 @@ public final class MoreFutures {
             return handleException(future, e, "Execution Exception");
 
         } catch (TimeoutException e) {
-            return handleException(future, e, "Timed out");
+            return handleException(future, e, "Time out");
         } finally {
             if (!future.isDone()) {
                 future.cancel(INTERRUPT_TASK);
@@ -59,14 +59,17 @@ public final class MoreFutures {
         }
     }
 
-    private static <T> T handleException(ListenableFuture<? extends T> future, Exception e, String message) throws MoreFuturesException {
-        logExceptionMessage("await " + message, e);
+    private static <T> T handleException(ListenableFuture<? extends T> future, Exception e, String exceptionDescription) throws MoreFuturesException {
+        logExceptionMessage("await " + exceptionDescription, e);
 
         if (future instanceof IdentifyingFuture) {
-            throw new MoreFuturesException(message + ": " + ((IdentifyingFuture) future).getDescriptor(), e, (IdentifyingFuture) future);
+            IdentifyingFuture identifyingFuture = (IdentifyingFuture) future;
+            LOG.error("Future failed to complete: " + identifyingFuture.getDescriptor());
+            identifyingFuture.getStatsDClient().increment("exception." + identifyingFuture.getStatsDescriptor() + exceptionDescription.toLowerCase().replace(" ", ""));
+            throw new MoreFuturesException(exceptionDescription + ": " + identifyingFuture.getDescriptor(), e);
         }
 
-        throw new MoreFuturesException(message + future.toString(), e);
+        throw new MoreFuturesException(exceptionDescription + future.toString(), e);
     }
 
     public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
@@ -74,12 +77,12 @@ public final class MoreFutures {
     }
 
     public static <I, O> ListenableFuture<O> transformIdentifying(ListenableFuture<I> input,
-                                                                  final Function<? super I, ? extends O> function) {
-        ListenableFuture<O> transformedFuture = Futures.transform(input, function);
+                                                       final Function<? super I, ? extends O> function) {
+        ListenableFuture<O> transformedFuture = Futures.transform(input, function, MoreExecutors.sameThreadExecutor());
 
-        if (input instanceof IdentifyingFuture) {
+        if(input instanceof IdentifyingFuture) {
             IdentifyingFuture identifying = (IdentifyingFuture) input;
-            return new IdentifyingFuture<O>(transformedFuture, identifying.getDescriptor(), identifying.getStatsDescriptor());
+            return new IdentifyingFuture<O>(transformedFuture, identifying.getDescriptor(), identifying.getStatsDClient(), identifying.getStatsDescriptor());
         }
 
         return transformedFuture;
