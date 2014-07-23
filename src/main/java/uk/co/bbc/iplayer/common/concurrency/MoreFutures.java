@@ -75,7 +75,7 @@ public final class MoreFutures {
 
     public static <I, O> ListenableFuture<O> transformIdentifying(ListenableFuture<I> input,
                                                                   final Function<? super I, ? extends O> function) {
-        ListenableFuture<O> transformedFuture = Futures.transform(input, function, MoreExecutors.sameThreadExecutor());
+        ListenableFuture<O> transformedFuture = Futures.transform(input, function);
 
         if (input instanceof IdentifyingFuture) {
             IdentifyingFuture identifying = (IdentifyingFuture) input;
