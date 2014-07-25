@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -48,6 +49,9 @@ public final class MoreFutures {
             return handleException(future, e, "Interrupted");
 
         } catch (ExecutionException e) {
+            if(e.getCause() instanceof SocketTimeoutException) {
+                return handleException(future, e, "Time out");
+            }
             return handleException(future, e, "Execution Exception");
 
         } catch (TimeoutException e) {
