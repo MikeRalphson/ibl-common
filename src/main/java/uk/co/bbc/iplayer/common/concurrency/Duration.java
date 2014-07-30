@@ -6,7 +6,7 @@ public class Duration {
 
     private final TimeUnit timeUnit;
     private final long length;
-    private final static long DEFAULT_MILLISECONDS = 5000;
+    private final static long DEFAULT_MILLISECONDS = 15000;
     private final static TimeUnit DEFAULT_UNIT = TimeUnit.MILLISECONDS;
 
     public Duration() {

@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class DataId implements Identifiable {
+public class DataId implements Identifiable, Comparable<DataId> {
 
     private final String id;
 
@@ -45,5 +45,11 @@ public class DataId implements Identifiable {
     @Override
     public String toString() {
         return id;
+    }
+
+    @Override
+    public int compareTo(DataId dataId) {
+
+        return this.getId().compareTo(dataId.getId());
     }
 }
