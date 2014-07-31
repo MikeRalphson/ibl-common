@@ -123,7 +123,7 @@ public final class MoreFutures {
 
     private static void log(String message, Exception e) {
         if (LOG.isWarnEnabled()) {
-            LOG.warn(message + "," + ExceptionUtils.getFullStackTrace(e));
+            LOG.warn(message , e);
         }
     }
 
