@@ -73,7 +73,7 @@ public final class MoreFutures {
             throw new MoreFuturesException(exceptionDescription + ": " + identifyingFuture.getDescriptor(), e);
         }
 
-        throw new MoreFuturesException(exceptionDescription + future.toString(), e);
+        throw new MoreFuturesException(exceptionDescription, e);
     }
 
     public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
