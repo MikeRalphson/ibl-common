@@ -1,14 +1,17 @@
 package uk.co.bbc.iplayer.common.concurrency;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,21 +46,16 @@ public final class MoreFutures {
             return future.get(duration.getLength(), duration.getTimeUnit());
 
         } catch (InterruptedException e) {
-            logExceptionMessage("await interrupted", e);
-            throw new MoreFuturesException("Future interrupted", e);
+            return handleException(future, e, "Interrupted");
 
         } catch (ExecutionException e) {
-            logExceptionMessage("await Execution", e);
-            throw new MoreFuturesException("Future Execution Exception", e);
+            if(e.getCause() instanceof SocketTimeoutException) {
+                return handleException(future, e, "Time out");
+            }
+            return handleException(future, e, "Execution Exception");
 
         } catch (TimeoutException e) {
-            logExceptionMessage("await timeout", e);
-            
-            if (future instanceof IdentifyingFuture) {
-                throw new MoreFuturesException("Timed out: " + ((IdentifyingFuture) future).getDescriptor(), e);
-            }
-
-            throw new MoreFuturesException("Timed out" + future.toString(), e);
+            return handleException(future, e, "Time out");
         } finally {
             if (!future.isDone()) {
                 future.cancel(INTERRUPT_TASK);
@@ -65,8 +63,33 @@ public final class MoreFutures {
         }
     }
 
+    private static <T> T handleException(ListenableFuture<? extends T> future, Exception e, String exceptionDescription) throws MoreFuturesException {
+        logExceptionMessage("await " + exceptionDescription, e);
+
+        if (future instanceof IdentifyingFuture) {
+            IdentifyingFuture identifyingFuture = (IdentifyingFuture) future;
+            LOG.error("Future failed to complete: " + identifyingFuture.getDescriptor());
+            identifyingFuture.getStatsDClient().increment("exception." + identifyingFuture.getStatsDescriptor() + "." + exceptionDescription.toLowerCase().replace(" ", ""));
+            throw new MoreFuturesException(exceptionDescription + ": " + identifyingFuture.getDescriptor(), e);
+        }
+
+        throw new MoreFuturesException(exceptionDescription, e);
+    }
+
     public static <T> T await(ListenableFuture<? extends T> future) throws MoreFuturesException {
         return await(future, DEFAULT_DURATION);
+    }
+
+    public static <I, O> ListenableFuture<O> transformIdentifying(ListenableFuture<I> input,
+                                                       final Function<? super I, ? extends O> function) {
+        ListenableFuture<O> transformedFuture = Futures.transform(input, function, MoreExecutors.sameThreadExecutor());
+
+        if(input instanceof IdentifyingFuture) {
+            IdentifyingFuture identifying = (IdentifyingFuture) input;
+            return new IdentifyingFuture<O>(transformedFuture, identifying.getDescriptor(), identifying.getStatsDClient(), identifying.getStatsDescriptor());
+        }
+
+        return transformedFuture;
     }
 
     public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures) throws MoreFuturesException {
@@ -98,9 +121,9 @@ public final class MoreFutures {
         return results;
     }
 
-    private static void log(String method, Exception e) {
+    private static void log(String message, Exception e) {
         if (LOG.isWarnEnabled()) {
-            LOG.warn(method + "," + ExceptionUtils.getFullStackTrace(e));
+            LOG.warn(message , e);
         }
     }
 
