@@ -274,6 +274,22 @@ public class MoreFuturesTest {
         assertThat(transformedFuture.get(), is("listenable future"));
     }
 
+    @Test(expected = MoreFuturesException.class)
+    public void aggregateAllThrowsExceptionWhenFutureTimesOut() throws MoreFuturesException {
+        ListenableFuture<String> listenableFuture =
+                createListenableFuture(createTimedTask(TOO_LONG, inMilliSeconds(8000)));
+        List<ListenableFuture<String>> futures = Lists.newArrayList(listenableFuture);
+        MoreFutures.aggregateAll(futures, Duration.inMilliSeconds(10));
+    }
+
+    @Test
+    public void aggregateDoesNotThrowExceptionWhenFutureTimesOut() throws MoreFuturesException {
+        ListenableFuture<String> listenableFuture =
+                createListenableFuture(createTimedTask(TOO_LONG, inMilliSeconds(8000)));
+        List<ListenableFuture<String>> futures = Lists.newArrayList(listenableFuture);
+        MoreFutures.aggregate(futures, Duration.inMilliSeconds(10));
+    }
+
     /**
      * Utility methods
      */
