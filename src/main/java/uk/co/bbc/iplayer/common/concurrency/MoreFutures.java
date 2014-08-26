@@ -97,6 +97,14 @@ public final class MoreFutures {
     }
 
     public static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout) throws MoreFuturesException {
+        return aggregate(futures, timeout, false);
+    }
+
+    public static <T> List<T> aggregateAll(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout) throws MoreFuturesException {
+        return aggregate(futures, timeout, true);
+    }
+
+    private static <T> List<T> aggregate(Iterable<? extends ListenableFuture<? extends T>> futures, Duration timeout, Boolean requireAllToCompleteWithinTimeout) throws MoreFuturesException {
         List<T> results = Collections.EMPTY_LIST;
         try {
             results = Futures.successfulAsList(futures).get(timeout.getLength(), timeout.getTimeUnit());
@@ -110,9 +118,12 @@ public final class MoreFutures {
 
         } catch (TimeoutException e) {
             logExceptionMessage("aggregate TimeoutException", e);
-            // Extract the successful futures and cancel futures that are stilling running
-            return filterCompleteTasks(futures);
-
+            if (requireAllToCompleteWithinTimeout) {
+                throw new MoreFuturesException("Timeout exception", e);
+            } else {
+                // Extract the successful futures and cancel futures that are stilling running
+                return filterCompleteTasks(futures);
+            }
         } finally {
             cancelActiveFutures(futures);
             results = newArrayList(filter(results, notNull()));
