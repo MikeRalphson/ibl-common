@@ -12,8 +12,6 @@ public class SerializableSet<K extends Serializable> implements Serializable {
         this.set = set;
     }
 
-    public Set<K> getList() {
-        return set;
-    }
+    public Set<K> getSet() { return set; }
 
 }
